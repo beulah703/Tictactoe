@@ -1,6 +1,35 @@
-package pack;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
+public class StringToSqlDateExample {
+    public static void main(String[] args) {
+        String dateString = "2023-04-25";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            java.util.Date utilDate = format.parse(dateString);
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+            System.out.println(sqlDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+In the example above, we first define a string `dateString
+
+
+
+
+
+
+
+
+
+
+package com.java.Test;
 
 import java.awt.Button;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
@@ -54,7 +83,7 @@ class superMarketApplication {
 		f.setVisible(true);
 		f.add(b6);
 		f.add(b7);
-		ImageIcon background_image = new ImageIcon("C:\\Users\\beulah.g\\Downloads\\image\\beuusm.jpg ");
+		ImageIcon background_image = new ImageIcon("C:\\Users\\beula\\OneDrive\\Pictures\\Saved Pictures\\beuus.jpg ");
 		JLabel background = new JLabel("", background_image, JLabel.CENTER);
 		Image img = background_image.getImage();
 		Image temp_img = img.getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
@@ -77,11 +106,13 @@ class superMarketApplication {
 				query = "Select * from bVendors";
 				String y = "";
 				try {
-
+					String s="";
 					Class.forName("org.postgresql.Driver");
-					con = DriverManager.getConnection(
-							"jdbc:postgresql://192.168.110.48:5432/plf_training?user=plf_training_admin&password=pff123");
-					Statement cs = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+					s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+			        con=DriverManager.getConnection(s);
+
+					
+					//Statement cs = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 					System.out.println(y);
 
@@ -111,7 +142,7 @@ class superMarketApplication {
 				f1.add(b2);
 				f1.add(b3);
 				f1.add(b4);
-				ImageIcon background_image = new ImageIcon("C:\\Users\\beulah.g\\Downloads\\image\\beuusm.jpg ");
+				ImageIcon background_image = new ImageIcon("C:\\Users\\beula\\OneDrive\\Pictures\\Saved Pictures\\beuus.jpg ");
 				JLabel background = new JLabel("", background_image, JLabel.CENTER);
 				Image img = background_image.getImage();
 				Image temp_img = img.getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
@@ -168,7 +199,7 @@ class superMarketApplication {
 							f2.add(ta);
 							f2.add(b11);
 							ImageIcon background_image = new ImageIcon(
-									"C:\\Users\\beulah.g\\Downloads\\image\\beuusm.jpg ");
+									"C:\\Users\\beula\\OneDrive\\Pictures\\Saved Pictures\\beuus.jpg ");
 							JLabel background = new JLabel("", background_image, JLabel.CENTER);
 							Image img = background_image.getImage();
 							Image temp_img = img.getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
@@ -178,9 +209,11 @@ class superMarketApplication {
 
 							f2.setBackground(Color.lightGray);
 							String y = "";
-							Class.forName("org.postgresql.Driver");
-							Connection con = DriverManager.getConnection(
-									"jdbc:postgresql://192.168.110.48:5432/plf_training?user=plf_training_admin&password=pff123");
+							 String s="";
+								Class.forName("org.postgresql.Driver");
+								s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+						        con=DriverManager.getConnection(s);
+
 							Statement cs = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 									ResultSet.CONCUR_UPDATABLE);
 							rs = cs.executeQuery(query);
@@ -253,6 +286,132 @@ class superMarketApplication {
 
 					}
 				});
+				b4.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent ae) {
+						try {
+
+							Frame f3 = new Frame();
+							JButton b1 = new JButton("Sales_b/w_dates");
+							b1.setBounds(540, 360, 230, 30);
+							JButton b2 = new JButton("Purchases_b/w_dates");
+							b2.setBounds(540, 270, 230, 30);
+							JButton b3 = new JButton("Item_Level");
+							b3.setBounds(740, 360, 230, 30);
+							JButton b5 = new JButton("GST");
+							b5.setBounds(740, 270, 230, 30);
+
+							f3.setLayout(null);
+							f3.setSize(1920, 1080);
+							f3.setTitle("Reports");
+							f3.setVisible(true);
+							f3.add(b1);
+							f3.add(b2);
+							f3.add(b3);
+							f3.add(b5);
+							
+							ImageIcon background_image = new ImageIcon(
+									"C:\\Users\\beula\\OneDrive\\Pictures\\Saved Pictures\\beuus.jpg ");
+							JLabel background = new JLabel("", background_image, JLabel.CENTER);
+							Image img = background_image.getImage();
+							Image temp_img = img.getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
+							background_image = new ImageIcon(temp_img);
+							background.setBounds(0, 0, 1920, 1080);
+							f3.add(background);
+
+							f3.setBackground(Color.lightGray);
+							String y = "";
+							 String s="";
+								Class.forName("org.postgresql.Driver");
+								s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+						        con=DriverManager.getConnection(s);
+
+							Statement cs = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+									ResultSet.CONCUR_UPDATABLE);
+							b2.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent ae) {
+									try {
+										Frame f2 = new Frame();
+										Label l1 = new Label("Enter Date1");
+										l1.setBounds(450, 200, 120, 30);
+										// l1.setBackground(Color.lightGray);
+										TextField tf1 = new TextField("0");
+										tf1.setBounds(600, 200, 100, 30);
+
+										Label l2 = new Label("Enter Date1");
+										l2.setBounds(450, 250, 120, 30);
+										// l2.setBackground(Color.lightGray);
+										TextField tf2 = new TextField("0");
+										tf2.setBounds(600, 250, 100, 30);
+
+										
+										// Enter Button
+										Button b11 = new Button("Enter");
+										b11.setBounds(540, 370, 70, 30);
+
+										f2.setLayout(null);
+										f2.setSize(1920, 1080);
+										f2.setTitle("SuperMarket");
+										f2.setVisible(true);
+										f2.add(l1);
+										f2.add(tf1);
+										f2.add(l2);
+										f2.add(tf2);
+										
+										f2.add(ta);
+										f2.add(b11);
+										String query2="Select * from bReports";
+										ImageIcon background_image = new ImageIcon(
+												"C:\\Users\\beula\\OneDrive\\Pictures\\Saved Pictures\\beuus.jpg ");
+										JLabel background = new JLabel("", background_image, JLabel.CENTER);
+										Image img = background_image.getImage();
+										Image temp_img = img.getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
+										background_image = new ImageIcon(temp_img);
+										background.setBounds(0, 0, 1920, 1080);
+										f2.add(background);
+
+										f2.setBackground(Color.lightGray);
+										String y = "";
+										 String s="";
+											Class.forName("org.postgresql.Driver");
+											s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+									        con=DriverManager.getConnection(s);
+
+										Statement cs = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+												ResultSet.CONCUR_UPDATABLE);
+										rs=cs.executeQuery(query2);
+										Date d1 = Date.valueOf(tf1.getText());
+										 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+										 Date d1 = format.parse(tf1.getText());
+										 Date d2 = format.parse(tf2.getText());
+										
+										rs.absolute(0);
+										String z="";
+										while (rs.next()) {
+											
+
+												if (d1<rs.getDate(4) && d2> rs.getDate(4) && rs.getString(2)=="Purchased") {
+												z+=rs.getInt(1)+" "+rs.getInt(2)+" "+rs.getString(2)+" "+rs.getDate(3)+" "+rs.getInt(4)+" "+"\n";
+												}
+													
+												}
+										}
+							catch(Exception e) {
+								
+							}
+							ta.setText(y);
+							f2.addWindowListener(new WindowAdapter() {
+								public void windowClosing(WindowEvent we) {
+									System.exit(0);
+								}
+
+							});
+								}
+							});
+							catch(Exception e) {
+								
+							}
+						}
+					});
 				b3.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent ae) {
 						try {
@@ -270,9 +429,10 @@ class superMarketApplication {
 							String query1;
 							query1 = "Select * from bStocks";
 							String y = "";
+							String s="";
 							Class.forName("org.postgresql.Driver");
-							Connection con = DriverManager.getConnection(
-									"jdbc:postgresql://192.168.110.48:5432/plf_training?user=plf_training_admin&password=pff123");
+							s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+					        con=DriverManager.getConnection(s);
 							Statement cs = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 									ResultSet.CONCUR_UPDATABLE);
 							rs = cs.executeQuery(query1);
@@ -307,10 +467,13 @@ class superMarketApplication {
 				query = "Select * from bStocks inner join bproducts on bStocks.pid=bproducts.prod_id";
 
 				try {
-
+                    String y="";
+                    String s="";
 					Class.forName("org.postgresql.Driver");
-					con = DriverManager.getConnection(
-							"jdbc:postgresql://192.168.110.48:5432/plf_training?user=plf_training_admin&password=pff123");
+					s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+			        con=DriverManager.getConnection(s);
+		            
+		            
 
 				} catch (Exception exe) {
 					System.out.println(exe);
@@ -374,10 +537,12 @@ class superMarketApplication {
 							f2.add(ta);
 							f2.add(b11);
 							f2.setBackground(Color.lightGray);
-							String y = "";
-							Class.forName("org.postgresql.Driver");
-							Connection con = DriverManager.getConnection(
-									"jdbc:postgresql://192.168.110.48:5432/plf_training?user=plf_training_admin&password=pff123");
+							 String y="";
+							 String s="";
+								Class.forName("org.postgresql.Driver");
+								s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+						        con=DriverManager.getConnection(s);
+
 							Statement cs = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 									ResultSet.CONCUR_UPDATABLE);
 							rs = cs.executeQuery(query);
