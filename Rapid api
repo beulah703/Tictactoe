@@ -1,6 +1,21 @@
 
 
+const data = null;
 
+const xhr = new XMLHttpRequest();
+xhr.withCredentials = true;
+
+xhr.addEventListener('readystatechange', function () {
+	if (this.readyState === this.DONE) {
+		console.log(this.responseText);
+	}
+});
+
+xhr.open('GET', 'https://moviesdatabase.p.rapidapi.com/titles/x/titles-by-ids?idsList=tt0001702%2Ctt0001856%2Ctt0001857');
+xhr.setRequestHeader('X-RapidAPI-Key', 'a7606e738fmshf10883893f07ca6p1f6698jsn805b2124dd99');
+xhr.setRequestHeader('X-RapidAPI-Host', 'moviesdatabase.p.rapidapi.com');
+
+xhr.send(data);
 
 
 HttpRequest request = HttpRequest.newBuilder()
