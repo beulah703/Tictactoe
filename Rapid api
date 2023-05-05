@@ -1,3 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Submit Button Example</title>
+</head>
+<body>
+	<form>
+		<label for="name">Enter your name:</label>
+		<input type="text" id="name" name="name"><br><br>
+		<button type="button" onclick="submitName()">Submit</button>
+	</form>
+	
+	<script>
+		function submitName() {
+			var name = document.getElementById("name").value;
+			alert("Hello, " + name + "!");
+		}
+	</script>
+</body>
+</html>
 
 
 const data = null;
