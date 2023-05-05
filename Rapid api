@@ -1,7 +1,12 @@
+
+
+
+
+
 HttpRequest request = HttpRequest.newBuilder()
-		.uri(URI.create("https://openai80.p.rapidapi.com/models"))
+		.uri(URI.create("https://moviesdatabase.p.rapidapi.com/titles/x/titles-by-ids?idsList=tt0001702%2Ctt0001856%2Ctt0001857"))
 		.header("X-RapidAPI-Key", "a7606e738fmshf10883893f07ca6p1f6698jsn805b2124dd99")
-		.header("X-RapidAPI-Host", "openai80.p.rapidapi.com")
+		.header("X-RapidAPI-Host", "moviesdatabase.p.rapidapi.com")
 		.method("GET", HttpRequest.BodyPublishers.noBody())
 		.build();
 HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
