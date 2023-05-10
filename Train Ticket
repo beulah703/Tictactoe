@@ -1,0 +1,182 @@
+<!DOCTYPE html> 
+<html>
+<title>Train Booking</title>
+<head>
+</head>
+<body>
+<h1>Book Bus Tickets Online</h1>
+		<form action="#" method="GET">
+			<label for="source">From</label>
+			<input type="text" id="source" name="source" placeholder="Enter Source City">
+			<label for="destination">To</label>
+			<input type="text" id="destination" name="destination" placeholder="Enter Destination City">
+			<label for="date">Journey Date</label>
+			<input type="date" id="date" name="date">
+			<label for="class">Class</label>
+			<select id="class" name="class">
+				<option value="1A">First AC</option>
+				<option value="2A">Second AC</option>
+				<option value="3A">Third AC</option>
+				<option value="SL">Sleeper</option>
+			</select>
+			<button type="submit">Search Buses</button>
+		</form>
+		
+		<form>
+  <h2>Passenger Details</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Passenger Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+       
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" name="passenger1_name" placeholder="Passenger 1 Name"></td>
+        <td><input type="number" name="passenger1_age" placeholder="Passenger 1 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger1_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger1_gender" value="Female">Female</label>
+        </td>
+       
+      </tr>
+      <tr>
+        <td><input type="text" name="passenger2_name" placeholder="Passenger 2 Name"></td>
+        <td><input type="number" name="passenger2_age" placeholder="Passenger 2 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger2_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger2_gender" value="Female">Female</label>
+        </td>
+      
+      </tr>
+      <tr>
+        <td><input type="text" name="passenger3_name" placeholder="Passenger 3 Name"></td>
+        <td><input type="number" name="passenger3_age" placeholder="Passenger 3 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger3_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger3_gender" value="Female">Female</label>
+        </td>
+       
+      </tr>
+      <tr>
+        <td><input type="text" name="passenger3_name" placeholder="Passenger 3 Name"></td>
+        <td><input type="number" name="passenger3_age" placeholder="Passenger 3 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger3_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger3_gender" value="Female">Female</label>
+        </td>
+       
+      </tr>
+       <tr>
+        <td><input type="text" name="passenger4_name" placeholder="Passenger 4 Name"></td>
+        <td><input type="number" name="passenger3_age" placeholder="Passenger 4 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger5_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger5_gender" value="Female">Female</label>
+        </td>
+       
+      </tr>
+
+
+</body>
+</html>
+
+@WebServlet("/train-search")
+public class TrainSearchServlet extends HttpServlet {
+    private TrainDAO trainDAO;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        try {
+            trainDAO = new TrainDAO();
+        } catch (SQLException e) {
+            throw new ServletException(e);
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Display the train search form
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/train-search.jsp");
+        dispatcher.forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Retrieve the source and destination from the form submission
+        String source = request.getParameter("source");
+        String destination = request.getParameter("destination");
+
+        // Query the database for trains between the source and destination
+        List<Train> trains;
+        try {
+            trains = trainDAO.getTrainsBySourceAndDestination(source, destination);
+        } catch (SQLException e) {
+            throw new ServletException(e);
+        }
+
+        // Pass the list of trains to the JSP page to be displayed
+        request.setAttribute("trains", trains);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/train-search-results.jsp");
+        dispatcher.forward(request, response);
+    }
+}
+
+
+
+<html>
+<head>
+    <title>Train Search</title>
+</head>
+<body>
+    <h1>Train Search</h1>
+    <form method="post" action="/train-search">
+        <label for="source">Source:</label>
+        <input type="text" id="source" name="source" required>
+        <br>
+        <label for="destination">Destination:</label>
+        <input type="text" id="destination" name="destination" required>
+        <br>
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>
+
+
+
+<html>
+<head>
+    <title>Train Search Results</title>
+</head>
+<body>
+    <h1>Train Search Results</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Train ID</th>
+                <th>Train Name</th>
+                <th>Source</th>
+                <th>Destination</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach items="${trains}" var="train">
+                <tr>
+                    <td>${train.trainId}</td>
+                    <td>${train.trainName}</td>
+                    <td>${train.source}</td>
+                    <td>${train.destination}</td>
+                    <td>${train.departureTime}</td>
+                    <td>${train.arrivalTime}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+</body>
+</html>
