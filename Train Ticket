@@ -421,3 +421,80 @@ rv float;
   select TicketsInsert1(07605,'HYD','VSKP','1AC')
 
 
+import java.io.*;
+import java.sql.*;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class RouteDropdownServlet extends HttpServlet {
+  
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    // Set up database connection
+    String url = "jdbc:mysql://localhost:3306/train_app";
+    String user = "username";
+    String password = "password";
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    
+    try {
+      Class.forName("com.mysql.jdbc.Driver");
+      conn = DriverManager.getConnection(url, user, password);
+      
+      // Prepare SQL statement to retrieve distinct from_location and to_location values
+      String sql = "SELECT DISTINCT from_location, to_location FROM train_routes";
+      stmt = conn.prepareStatement(sql);
+      rs = stmt.executeQuery();
+      
+      // Retrieve from_location and to_location values from the ResultSet
+      List<String> fromLocations = new ArrayList<>();
+      List<String> toLocations = new ArrayList<>();
+      while (rs.next()) {
+        String fromLocation = rs.getString("from_location");
+        String toLocation = rs.getString("to_location");
+        fromLocations.add(fromLocation);
+        toLocations.add(toLocation);
+      }
+      
+      // Set response content type
+      response.setContentType("text/html");
+      
+      // Write out the from_location and to_location values as dropdown buttons
+      PrintWriter out = response.getWriter();
+      out.println("<html>");
+      out.println("<head><title>Select Route</title></head>");
+      out.println("<body>");
+      out.println("<form>");
+      out.println("<label for='from_location'>From:</label>");
+      out.println("<select name='from_location' id='from_location'>");
+      for (String fromLocation : fromLocations) {
+        out.println("<option value='" + fromLocation + "'>" + fromLocation + "</option>");
+      }
+      out.println("</select>");
+      out.println("<br/><br/>");
+      out.println("<label for='to_location'>To:</label>");
+      out.println("<select name='to_location' id='to_location'>");
+      for (String toLocation : toLocations) {
+        out.println("<option value='" + toLocation + "'>" + toLocation + "</option>");
+      }
+      out.println("</select>");
+      out.println("<br/><br/>");
+      out.println("<input type='submit' value='Search'/>");
+      out.println("</form>");
+      out.println("</body></html>");
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      // Close database resources
+      try { rs.close(); } catch (Exception e) { /* ignored */ }
+      try { stmt.close(); } catch (Exception e) { /* ignored */ }
+      try { conn.close(); } catch (Exception e) { /* ignored */ }
+    }
+    
+  }
+  
+}
