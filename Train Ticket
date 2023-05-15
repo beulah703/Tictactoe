@@ -1664,3 +1664,389 @@ function fun4class(){
       </center>
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+
+<title>Railway Reservation</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<center>
+<h1>Train Reservation</h1></center>
+
+
+<script>
+function fun1(){
+	$.ajax({
+		url:'FromToTrainServlet',
+		method:'GET',
+		success: function(resultText){
+			$('#results').html(resultText);
+			$('#resultss').html(resultText);
+			
+		},
+		error:function(jqXHR,exception){
+			console.log('Error Occured!');
+		}
+	})
+}</script>
+<center>
+From : <Select id="results" ></Select>
+To : <Select id="resultss" Onchange="fun()"></Select>
+</center>
+<center><br><br>
+Date:<input type="text" id="date"/><br><br></center>
+<center><button onclick="fun1()">submit</button></center>
+<script>
+function fun(){
+	var from=$('#results').val();
+	var to=$('#resultss').val();
+	var dates=$('#date').val();
+	$('#From').val(from);
+	$('#To').val(to);
+	$.ajax({
+		url:'TrainFareServlet',
+		method:'GET',
+		data:{
+			from:from,to:to
+		},
+		success: function (resultText) {
+            $('#resultw').html(resultText);
+         },
+         error: function (jqXHR, exception) {
+             console.log('Error occured!!');
+          }
+	})
+	$.ajax({
+		url:'TrainsServlet',
+		
+		method:'POST',
+		data:{
+			from:from,to:to,dates:dates
+		},
+        success: function (resultText) {
+            $('#resultw').html(resultText);
+         },
+         error: function (jqXHR, exception) {
+             console.log('Error occured!!');
+          }
+	})
+	
+}
+</script><br><br>
+<center><Select id="resultw" onChange="fun2()">
+</Select></center>
+<center>
+Class: <Select id="resultClass" Onchange="fun4class()"></Select>
+
+</center>
+<form url='PassengerServlet' method='POST'>
+<center><h1>Passenger Details</h1></center>
+<center>
+Train Number:<input type="text" id="TrainNo"/><br><br>
+Train Name:<input type="text" id="TrainName"/><br><br>
+From:<input type="text" id="From"/><br><br>
+To:<input type="text" id="To"/><br><br>
+Train Class:<input type="text" id="TrainClass"/><br><br>
+Fare:<input type="text" id="fare"/><br><br>
+ <button type="submit">Submit</button>
+</center>
+</form>
+ 
+<script>
+function fun2(){
+	var arr= $('#resultw').val().split(" ");
+	$('#TrainNo').val(arr[0]);
+	$('#TrainName').val(arr[1]);
+	$('#TrainClass').val(" ");
+	$.ajax({
+		url:'TrainClassServlet',
+		method:'POST',
+		data:{
+			TrainNo:arr[0]
+		},
+		 success: function(resultText) {
+		      $('#resultClass').html(resultText);
+		    },
+		    error: function(jqXHR, exception) {
+		      console.log('Error Occurred!');
+		    }
+		
+       
+	})
+	
+}
+</script>
+
+
+
+<script>
+function fun4class(){
+	var arr= $('#resultClass').val();
+	var arr1= $('#resultw').val().split(" ");
+	var from=$('#results').val();
+	var to=$('#resultss').val();
+	var dates=$('#date').val();
+	
+	$('#TrainClass').val(arr);
+	
+	$.ajax({
+		url:'TrainFareServlet',
+		method:'POST',
+		data:{
+			from:from,to:to,TrainNo:arr1[0],Class:arr
+		},
+	
+	 success: function(resultText) {
+		      $('#resultClass').html(resultText);
+		    },
+		    error: function(jqXHR, exception) {
+		      console.log('Error Occurred!');
+		    }
+	})
+}
+</script>
+<script >
+function fares() {
+    $.ajax({
+        url: "TrainFareServlet",
+        type: "POST",
+        success: function (response) {
+        
+        	if(response){
+  			  var fare = response;     
+            $("#fare").val(fare);
+        	}
+        	else{
+        		alert("Error");
+        	}
+           
+        },
+        error: function (xhr, status, error) {
+            alert("An error occurred while fetching the record: " + error);
+        }
+    });
+}</script>
+<center>
+ <table>
+    <thead>
+      <tr>
+        <th>Passenger Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+       
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" name="passenger1_name" placeholder="Passenger 1 Name"></td>
+        <td><input type="text" name="passenger1_age" placeholder="Passenger 1 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger1_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger1_gender" value="Female">Female</label>
+        </td>
+       
+      </tr>
+      <tr>
+        <td><input type="text" name="passenger2_name" placeholder="Passenger 2 Name"></td>
+        <td><input type="number" name="passenger2_age" placeholder="Passenger 2 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger2_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger2_gender" value="Female">Female</label>
+        </td>
+      
+      </tr>
+      <tr>
+        <td><input type="text" name="passenger3_name" placeholder="Passenger 3 Name"></td>
+        <td><input type="number" name="passenger3_age" placeholder="Passenger 3 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger3_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger3_gender" value="Female">Female</label>
+        </td>
+       
+      </tr>
+      <tr>
+        <td><input type="text" name="passenger3_name" placeholder="Passenger 3 Name"></td>
+        <td><input type="number" name="passenger3_age" placeholder="Passenger 3 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger3_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger3_gender" value="Female">Female</label>
+        </td>
+       
+      </tr>
+       <tr>
+        <td><input type="text" name="passenger4_name" placeholder="Passenger 4 Name"></td>
+        <td><input type="number" name="passenger3_age" placeholder="Passenger 4 Age"></td>
+        <td>
+          <label><input type="radio" name="passenger5_gender" value="Male">Male</label>
+          <label><input type="radio" name="passenger5_gender" value="Female">Female</label>
+        </td>
+       
+      </tr>
+       <button type="button" onclick="fares()">Get Fare</button>
+      </center>
+</body>
+</html>
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class TrainFareServlet
+ */
+@WebServlet("/TrainFareServlet")
+public class TrainFareServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		try {
+			Connection c = null;
+			Class.forName("org.postgresql.Driver");
+
+			String s = "";
+			s = "jdbc:postgresql://192.168.110.48:5432/plf_training?user=plf_training_admin&password=pff123";
+			c = DriverManager.getConnection(s);
+			// String from = request.getParameter("from");
+			// String to = request.getParameter("to");
+			// String Class = request.getParameter("Class");
+
+			int TrainNo = Integer.parseInt(request.getParameter("TrainNo"));
+			// int TrainNo = 22824;
+			// System.out.println(from);
+			// System.out.println(to);
+			// System.out.println(Class);
+			// System.out.println(TrainNo);
+
+			Statement st = c.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Statement st1 = c.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Statement st2 = c.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Statement st3 = c.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			// ResultSet stt=st.executeQuery("select * from beu_stn_dis where fst_code='"+from+"' and
+			// tst_code='"+to+"'");
+			// stt.absolute(1);
+			// System.out.println(stt.getInt(3));
+			// int dist=stt.getInt(3);
+			String from = request.getParameter("from");
+			String to = request.getParameter("to");
+			String Class = request.getParameter("Class");
+
+			ResultSet stt = st.executeQuery("select * from sow_stn_dis");
+			ResultSet stt3 = st1.executeQuery("select * from sow_stn_dis");
+			stt.absolute(0);
+			stt3.absolute(0);
+			int dist = 0;
+			while (stt.next()) {
+
+				// int TrainNo = Integer.parseInt(request.getParameter("TrainNo"));
+				System.out.println(stt.getString(1));
+
+				if (stt.getString(1).equals(from)) {
+
+					System.out.println("dist is" + dist);
+					while (stt3.next()) {
+
+						if ((stt3.getString(2).equals(to))) {
+							System.out.println("each dist" + (stt3.getString(3)));
+							dist = dist + stt3.getInt(3);
+							break;
+						} else {
+							System.out.println("each dist" + (stt3.getString(3)));
+							dist = dist + stt3.getInt(3);
+						}
+
+					}
+
+				}
+			}
+
+			System.out.println("dist is" + dist);
+			stt.close();
+			ResultSet stt1 = st.executeQuery(
+					"select * from sow_tr_fares where far_dist=(select min(far_dist) from sow_tr_fares where far_dist>="
+							+ dist + ")");
+			stt1.absolute(1);
+			System.out.println("fare" + stt1.getInt(2));
+			int faredist = stt1.getInt(2);
+			ResultSet stt2 = st.executeQuery(
+					"select * from tn_tvl_classes where tr_no=" + TrainNo + " and tr_tvl_class='" + Class + "'");
+			stt2.absolute(1);
+			Double farefactor = stt2.getDouble(3);
+			System.out.println("fare factor" + stt2.getDouble(3));
+			Double TotalFare = farefactor * faredist;
+			System.out.println(TotalFare);
+			
+			response.getWriter().print(TotalFare + "");
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+
+}
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class PassengerServlet
+ */
+@WebServlet("/PassengerServlet")
+public class PassengerServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String Trno = request.getParameter("TrainNo");
+		String Trname = request.getParameter("TrainName");
+		String from = request.getParameter("From");
+		String to = request.getParameter("To");
+		String Class = request.getParameter("TrainClass");
+		String Fare = request.getParameter("fare");
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		out.println("<html>");
+		out.println("<head>");
+		out.println("<title> TICKET DETAILS</title>");
+		out.println("</head>");
+		out.println("<body>");
+		out.println("<h1>Ticket Details</h1>");
+		out.println("<table>");
+		out.println("<tr><th>Train number</th><th>Train Name</th><th>From</th><th>To</th><th>Class</th><th>Fare</th>");
+		out.println("<tr><td>" + Trno + "</td><td>" + Trname + "</td><td>" + from + "</td><td>" + to + "</td><td>"
+				+ Class + "</td><td>" + Fare + "</td>");
+
+		out.println("</table>");
+		out.println("</body>");
+		out.println("<html>");
+
+		out.println("</html>");
+
+	}
+
+}
