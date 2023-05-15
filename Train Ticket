@@ -1,30 +1,1612 @@
-<!DOCTYPE html> 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/FetchFirstRecordServlet")
+public class FetchFirstRecordServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        PrintWriter out = response.getWriter();
+
+        try {
+            conn = DBConnectionUtil.getConnection();
+            String sql = "SELECT * FROM Employee ORDER BY id LIMIT 1";
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("id"));
+                employee.setFirstName(rs.getString("first_name"));
+                employee.setLastName(rs.getString("last_name"));
+                employee.setEmail(rs.getString("email"));
+
+                // Convert employee object to JSON and send as response
+               
+                response.getWriter().print(rs.getInt(1)+","+rs.getString("first_name")+","+rs.getString("last_name")+","+rs.getString("email"));
+//                response.getWriter().print("<label>"+rs.getString(2)+"</label>"+"<br>");
+//                response.getWriter().print("<label>"+rs.getString(3)+"</label>"+"<br>");
+            } else {
+                // No records found
+                out.print("{}");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
+        }
+    }
+
+    // Helper method to convert Employee object to JSON string
+   
+
+    // Helper method to close database resources
+    private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/FetchNextRecordServlet")
+public class FetchNextRecordServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        PrintWriter out = response.getWriter();
+        int currentId = Integer.parseInt(request.getParameter("id"));
+
+        try {
+            conn = DBConnectionUtil.getConnection();
+            String sql = "SELECT * FROM Employee WHERE id > ? ORDER BY id LIMIT 1";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+            	 Employee employee = new Employee();
+                employee.setId(rs.getInt("id"));
+                employee.setFirstName(rs.getString("first_name"));
+                employee.setLastName(rs.getString("last_name"));
+                employee.setEmail(rs.getString("email"));
+
+                // Convert employee object to JSON and send as response
+                response.getWriter().print(rs.getInt(1)+","+rs.getString("first_name")+","+rs.getString("last_name")+","+rs.getString("email"));
+            } else {
+                // No more records found
+                out.print("{}");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
+        }
+    }
+
+  
+  
+
+    // Helper method to close database resources
+    private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/FetchPreviousRecordServlet")
+public class FetchPreviousRecordServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        PrintWriter out = response.getWriter();
+        int currentId = Integer.parseInt(request.getParameter("id"));
+
+        try {
+            conn = DBConnectionUtil.getConnection();
+            String sql = "SELECT * FROM Employee WHERE id < ? ORDER BY id DESC LIMIT 1";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+            	 Employee employee = new Employee();
+                employee.setId(rs.getInt("id"));
+                employee.setFirstName(rs.getString("first_name"));
+                employee.setLastName(rs.getString("last_name"));
+                employee.setEmail(rs.getString("email"));
+
+                // Convert employee object to JSON and send as response
+                response.getWriter().print(rs.getInt(1)+","+rs.getString("first_name")+","+rs.getString("last_name")+","+rs.getString("email"));
+            } else {
+                // No more records found
+                out.print("{}");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
+        }
+    }
+
+  
+
+    // Helper method to close database resources
+    private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/UpdateRecordServlet")
+public class UpdateRecordServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        int id = Integer.parseInt(request.getParameter("id"));
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+
+        try {
+            conn = DBConnectionUtil.getConnection();
+            String sql = "UPDATE Employee SET first_name=?, last_name=?, email=? WHERE id=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, firstName);
+            stmt.setString(2, lastName);
+            stmt.setString(3, email);
+            stmt.setInt(4, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            System.out.println(rowsAffected);
+
+            if (rowsAffected > 0) {
+                // Success message
+                response.getWriter().print("Success");
+            } else {
+                // Error message
+                response.getWriter().print("Failed to update record");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt);
+        }
+    }
+
+    // Helper method to close database resources
+    private void closeResources(Connection conn, PreparedStatement stmt) {
+        try {
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/DeleteRecordServlet")
+public class DeleteRecordServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        int id = Integer.parseInt(request.getParameter("id"));
+
+        try {
+            conn = DBConnectionUtil.getConnection();
+            String sql = "DELETE FROM Employee WHERE id=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                // Success message
+                response.getWriter().print("success");
+            } else {
+                // Error message
+                response.getWriter().print("Failed to delete record");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt);
+        }
+    }
+
+    // Helper method to close database resources
+    private void closeResources(Connection conn, PreparedStatement stmt) {
+        try {
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DBConnectionUtil {
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/newdb";
+    private static final String DB_USERNAME = "postgres";
+    private static final String DB_PASSWORD = "Beuganji7@";
+   // Connection c = null;
+
+	
+
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+    }
+}
+
+
+public class Employee {
+    private int id;
+    private String firstName;
+    private String lastName;
+    private String email;
+
+    public Employee() {
+      
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    // Optional: Override toString() method to provide a string representation of the object
+    @Override
+    public String toString() {
+        return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
+    }
+}
+
+
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/SaveRecordServlet")
+public class SaveRecordServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+
+        try {
+            conn = DBConnectionUtil.getConnection();
+            String sql = "INSERT INTO employee (first_name, last_name, email) VALUES (?, ?, ?)";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, firstName);
+            stmt.setString(2, lastName);
+            stmt.setString(3, email);
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                // Success message
+                response.getWriter().print("Record saved successfully");
+            } else {
+                // Error message
+                response.getWriter().print("Failed to save record");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt);
+        }
+    }
+
+    // Helper method to close database resources
+    private void closeResources(Connection conn, PreparedStatement stmt) {
+        try {
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/EmailServlet")
+public class EmailServlet extends HttpServlet {
+
+  private static final long serialVersionUID = 1L;
+
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+	  String[] recipients = new String[4];
+	  //recipients[0]="beulahchristi77@gmail.com";
+	  recipients[0]="beulahganji77@gmail.com";
+	  //recipients[2]="seeladevi2002@gmail.com";
+    // recipients = request.getParameterValues("recipients");
+    System.out.println(recipients[0]);
+   
+    String subject = request.getParameter("subject");
+    System.out.println(subject);
+    String body = request.getParameter("body");
+    String scheduleDate = request.getParameter("scheduleDate");
+
+    // Check if the schedule date is provided
+    if (scheduleDate != null && !scheduleDate.isEmpty()) {
+      // Schedule the email based on the provided date
+      LocalDate scheduledDate = LocalDate.parse(scheduleDate);
+
+      // Store the scheduled email in the database
+      storeScheduledEmail(recipients, subject, body, scheduledDate);
+
+      // Redirect to a success page or display a success message
+      response.sendRedirect("success.html");
+    } else {
+      // Send the email immediately
+      for (String recipient : recipients) {
+        sendEmail(recipient, subject, body);
+        String htmlResponse = "<h2>Email Sent!</h2>"
+                + "<p>Recipients: " +recipient + "</p>";
+
+        // Set the response content type
+        response.setContentType("text/html");
+
+        // Write the HTML response to the client
+        PrintWriter out = response.getWriter();
+        out.println(htmlResponse);
+        out.close();
+      }
+
+      // Redirect to a success page or display a success message
+      response.sendRedirect("success.html");
+    }
+  }
+
+  private void sendEmail(String recipientEmail, String subject, String body) {
+    // Your email configuration details
+	 
+    String senderEmail = "beulahchristi77@gmail.com";
+    String senderPassword = "ykwgjicliltbaljj";
+
+    // Email properties
+    Properties props = new Properties();
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
+    // Create the session with authentication
+    
+    props.put("mail.smtp.ssl.ciphersuites", "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256");
+ // Disable SSL certificate validation
+    props.put("mail.smtp.ssl.trust", "*");
+    Session session = Session.getInstance(props, new Authenticator() {
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(senderEmail, senderPassword);
+      }
+    });
+   
+
+
+    try {
+      // Create the email message
+      Message message = new MimeMessage(session);
+      message.setFrom(new InternetAddress(senderEmail));
+      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+      message.setSubject(subject);
+      message.setText(body);
+
+      // Send the email
+      Transport.send(message);
+
+      System.out.println("Email sent successfully to: " + recipientEmail);
+    } catch (MessagingException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void storeScheduledEmail(String[] recipients, String subject, String body, LocalDate scheduledDate) {
+    // Your database connection details
+	  Connection c = null;
+
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String s = "jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+
+		try {
+			c = DriverManager.getConnection(s);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    // Database query to insert the scheduled email
+    String insertQuery = "INSERT INTO scheduled_emails (to_email, subject, body, schedule_date) VALUES (?, ?, ?, ?)";
+
+    try (
+         PreparedStatement pstmt = c.prepareStatement(insertQuery)) {
+      for (String recipient : recipients) {
+        pstmt.setString(1, recipient);
+        pstmt.setString(2, subject);
+        pstmt.setString(3, body);
+        pstmt.setDate(4, Date.valueOf(scheduledDate));
+        pstmt.executeUpdate();
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+}
+
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/fetchContacts")
+public class fetchContacts extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    // Your database connection details
+
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Set the response content type
+        response.setContentType("text/html");
+        
+        PrintWriter out = response.getWriter();
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>Contact List</title>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("<h1>Contact List</h1>");
+        Connection c = null;
+
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String s = "jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+
+		try {
+			c = DriverManager.getConnection(s);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        // Query the database for the contacts
+        String selectQuery = "SELECT mail_id FROM Beucontacts";
+        try (
+             Statement stmt = c.createStatement();
+             ResultSet rs = stmt.executeQuery(selectQuery)) {
+            // Iterate through the result set and display the contacts
+        	List<String> emails = new ArrayList<>();
+
+            // Iterate through the result set and add the emails to the list
+            while (rs.next()) {
+                String email = rs.getString("mail_id");
+                emails.add(email);
+            }
+
+            // Generate the HTML options using the email addresses
+            for (String email : emails) {
+                out.println("<option value='" + email + "'>" + email + "</option>");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        out.println("</body>");
+        out.println("</html>");
+    }
+}
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import javax.mail.*;
+import javax.mail.internet.*;
+
+public class EmailScheduler implements Runnable {
+
+  // Your database connection details
+//	jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@
+ 
+
+  // Your email configuration details
+  private static final String senderEmail = "beulahchristii77@gmail.com";
+  private static final String senderPassword = "ykwgjicliltbaljj";
+  
+
+  @Override
+  public void run() {
+    // Retrieve the current date
+    LocalDate currentDate = LocalDate.now();
+    Connection c = null;
+
+	try {
+		Class.forName("org.postgresql.Driver");
+	} catch (ClassNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+	String s = "jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+
+	try {
+		c = DriverManager.getConnection(s);
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+    // Query the database for scheduled emails with a scheduled date less than or equal to the current date
+    String selectQuery = "SELECT * FROM scheduled_emails WHERE schedule_date <= ?";
+    try (
+         PreparedStatement pstmt = c.prepareStatement(selectQuery)) {
+      pstmt.setDate(1, Date.valueOf(currentDate));
+      ResultSet rs = pstmt.executeQuery();
+
+      // Iterate through the result set and send the scheduled emails
+      while (rs.next()) {
+        String recipientEmail = rs.getString("to_email");
+        String subject = rs.getString("subject");
+        String body = rs.getString("body");
+
+        // Send the email
+        sendEmail(recipientEmail, subject, body);
+
+        // Delete the scheduled email from the database
+        deleteScheduledEmail(rs.getInt("id"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    // Schedule birthday emails
+    scheduleBirthdayEmails();
+  }
+
+  public void scheduleBirthdayEmails() {
+	  // Retrieve the current date
+	  LocalDate currentDate = LocalDate.now();
+	  Connection c = null;
+
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String s = "jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+
+		try {
+			c = DriverManager.getConnection(s);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	  // Query the database for contacts with birthdays on the current date
+	  String selectQuery = "SELECT * FROM Beucontacts WHERE EXTRACT(MONTH FROM date_of_birth) = ? AND EXTRACT(DAY FROM date_of_birth) = ?";
+	  try (
+	       PreparedStatement pstmt = c.prepareStatement(selectQuery)) {
+	    pstmt.setInt(1, currentDate.getMonthValue());
+	    pstmt.setInt(2, currentDate.getDayOfMonth());
+	    ResultSet rs = pstmt.executeQuery();
+
+	    // Iterate through the result set and schedule the birthday emails
+	    while (rs.next()) {
+	      String recipientEmail = rs.getString("mail_id");
+	      String subject = "Happy Birthday!";
+	      String body = "Happy Birthday to you, " + rs.getString("name") + "!";
+	      LocalDate scheduledDate = currentDate.plusDays(1); // Schedule the email for the next day
+
+	      // Store the scheduled email in the database
+	      storeScheduledEmail(new String[]{recipientEmail}, subject, body, scheduledDate);
+	    }
+	  } catch (SQLException e) {
+	    e.printStackTrace();
+	  }
+	}
+
+
+  private void sendEmail(String recipientEmail, String subject, String body) {
+    // Email properties
+    Properties props = new Properties();
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+
+    // Create the session with authentication
+    Session session = Session.getInstance(props, new Authenticator() {
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(senderEmail, senderPassword);
+      }
+    });
+
+    try {
+      // Create the email message
+      Message message = new MimeMessage(session);
+      message.setFrom(new InternetAddress(senderEmail));
+      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+      message.setSubject(subject);
+      message.setText(body);
+
+      // Send the email
+      Transport.send(message);
+
+      System.out.println("Email sent successfully to: " + recipientEmail);
+    } catch (MessagingException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void deleteScheduledEmail(int emailId) {
+	  Connection c = null;
+
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String s = "jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+
+		try {
+			c = DriverManager.getConnection(s);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    // Delete the scheduled email from the database
+    String deleteQuery = "DELETE FROM scheduled_emails WHERE id = ?";
+    try (
+         PreparedStatement pstmt = c.prepareStatement(deleteQuery)) {
+      pstmt.setInt(1, emailId);
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static void scheduleEmails() {
+    // Create a scheduled executor service with a single thread
+    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
+    // Schedule the email scheduler to run every minute
+    executorService.scheduleAtFixedRate(new EmailScheduler(), 0, 1, TimeUnit.MINUTES);
+  }
+  public void storeScheduledEmail(String[] recipients, String subject, String body, LocalDate scheduledDate) {
+	    // Your database connection details
+		  Connection c = null;
+
+			try {
+				Class.forName("org.postgresql.Driver");
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			String s = "jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+
+			try {
+				c = DriverManager.getConnection(s);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+	    // Database query to insert the scheduled email
+	    String insertQuery = "INSERT INTO scheduled_emails (to_email, subject, body, schedule_date) VALUES (?, ?, ?, ?)";
+
+	    try (
+	         PreparedStatement pstmt = c.prepareStatement(insertQuery)) {
+	      for (String recipient : recipients) {
+	        pstmt.setString(1, recipient);
+	        pstmt.setString(2, subject);
+	        pstmt.setString(3, body);
+	        pstmt.setDate(4, Date.valueOf(scheduledDate));
+	        pstmt.executeUpdate();
+	      }
+	    } catch (SQLException e) {
+	      e.printStackTrace();
+	    }
+	  }
+}
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+
+@WebListener
+public class AppInitializer implements ServletContextListener {
+
+  @Override
+  public void contextInitialized(ServletContextEvent sce) {
+    // Start the email scheduler
+    EmailScheduler.scheduleEmails();
+  }
+
+  @Override
+  public void contextDestroyed(ServletContextEvent sce) {
+	    // Clean up any resources if needed
+	  }
+	}
+
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class TrainClassServlet
+ */
+@WebServlet("/TrainClassServlet")
+public class TrainClassServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+   
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			Connection c=null;
+			Class.forName("org.postgresql.Driver");
+			
+			
+			String s="";
+			s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+			c=DriverManager.getConnection(s);
+			String TrainNo = request.getParameter("TrainNo");
+			Statement st= c.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ResultSet stt=st.executeQuery("select tr_tvl_class from beu_tvl_classes where tr_no ="+TrainNo+" ");
+			stt.absolute(0);
+			while(stt.next()) {
+				response.getWriter().print("<option>"+stt.getString(1)+"</option>"+"<br>");
+			}
+		}catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+
+	
+	
+
+}
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class TrainFareServlet
+ */
+@WebServlet("/TrainFareServlet")
+public class TrainFareServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public TrainFareServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		try {
+			Connection c=null;
+			Class.forName("org.postgresql.Driver");
+			
+			String s="";
+			s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+			c=DriverManager.getConnection(s);
+//			String from = request.getParameter("from");
+//			String to = request.getParameter("to");
+//			String Class = request.getParameter("Class");
+//			int TrainNo= Integer.parseInt(request.getParameter("TrainNo"));
+//			System.out.println(from);
+//			System.out.println(to);
+//			System.out.println(Class);
+//			System.out.println(TrainNo);
+			
+		Statement st= c.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+//			ResultSet stt=st.executeQuery("select * from beu_stn_dis where fst_code='"+from+"' and tst_code='"+to+"'");
+//			stt.absolute(1);
+//			System.out.println(stt.getInt(3));
+//			int dist=stt.getInt(3);
+			ResultSet stt=st.executeQuery("select * from beu_stn_dis");
+			stt.absolute(0);
+			int dist=0;
+			while(stt.next()) {
+				String from = request.getParameter("from");
+				String to = request.getParameter("to");
+				String Class = request.getParameter("Class");
+				int TrainNo= Integer.parseInt(request.getParameter("TrainNo"));
+				
+				if(stt.getString(1)==from) {
+					dist=dist+stt.getInt(3);
+					while(stt.next()) {
+						if(stt.getString(2)!=to) {
+							dist=dist+stt.getInt(3);
+						}
+						break;
+					}
+					
+				}
+			}
+			dist=dist+stt.getInt(3);
+			System.out.println(dist);
+			ResultSet stt1=st.executeQuery("select * from beu_tr_fares where far_dist=(select min(far_dist) from beu_tr_fares where far_dist>="+dist+")");
+			stt1.absolute(1);
+			System.out.println(stt1.getInt(2));
+			int faredist=stt1.getInt(2);
+			ResultSet stt2=st.executeQuery("select * from beu_tvl_classes where tr_no="+TrainNo+" and tr_tvl_class='"+Class+"'");
+			stt2.absolute(1);
+			Double farefactor=stt2.getDouble(3);
+			System.out.println(stt2.getDouble(3));
+			Double TotalFare=farefactor*faredist;
+			System.out.println(TotalFare);
+			  response.getWriter().print("<h4>"+"TotalFare is:  "+TotalFare+"</h4>"+"<br>");
+			
+			
+		}catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+
+	
+}
+
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class TrainsServlet
+ */
+@WebServlet("/TrainsServlet")
+public class TrainsServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+   
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		try {
+			String from = request.getParameter("from");
+			String to = request.getParameter("to");
+			String datee = request.getParameter("dates");
+		//	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+		//	java.sql.Date fromDate = new java.sql.Date(formatter.parse(datee).getTime());
+
+			Connection c = null;
+
+			Class.forName("org.postgresql.Driver");
+
+			String s = "jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+
+			c = DriverManager.getConnection(s);
+
+			Statement st = c.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			PreparedStatement p = c.prepareStatement(
+					"select * from beu_trains where tr_no in(select tr_no  from beu_stn where stn_code =?  ) and tr_no in(select tr_no from beu_stn where stn_code =?) ");
+			p.setString(1, from);
+			p.setString(2, to);
+			ResultSet stt = p.executeQuery();
+		
+
+			String dat = "";
+			while (stt.next()) {
+				for (int i = 1; i <= 2; i++) {
+					dat += stt.getString(i) + " ";
+
+				}
+				response.getWriter().print("<option>" + dat + "</option>" + "<br>");
+
+				dat = " ";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+
+
+
+
+import java.io.IOException;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class FromToTrainServlet
+ */
+@WebServlet("/FromToTrainServlet")
+public class FromToTrainServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		try {
+			Connection c=null;
+			Class.forName("org.postgresql.Driver");
+			
+			
+			String s="";
+			s="jdbc:postgresql://localhost:5432/newdb?user=postgres&password=Beuganji7@";
+			c=DriverManager.getConnection(s);
+			Statement st= c.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ResultSet stt=st.executeQuery("select * from beu_stn");
+			stt.absolute(0);
+			while(stt.next()) {
+				response.getWriter().print("<option>"+stt.getString(1)+"</option>"+"<br>");
+			}
+		}catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+}
+<!DOCTYPE html>
 <html>
-<title>Train Booking</title>
 <head>
+    <title>Employee CRUD</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-<h1>Book Bus Tickets Online</h1>
-		<form action="#" method="GET">
-			<label for="source">From</label>
-			<input type="text" id="source" name="source" placeholder="Enter Source City">
-			<label for="destination">To</label>
-			<input type="text" id="destination" name="destination" placeholder="Enter Destination City">
-			<label for="date">Journey Date</label>
-			<input type="date" id="date" name="date">
-			<label for="class">Class</label>
-			<select id="class" name="class">
-				<option value="1A">First AC</option>
-				<option value="2A">Second AC</option>
-				<option value="3A">Third AC</option>
-				<option value="SL">Sleeper</option>
-			</select>
-			<button type="submit">Search Buses</button>
-		</form>
+    <h1>Employee CRUD</h1>
+    <form>
+    <label for="ID">ID:</label>
+        <input type="text" id="id" />
+        <div>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" />
+        </div>
+        <div>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" />
+        </div>
+        <div>
+            <label for="email">Job:</label>
+            <input type="email" id="email" />
+        </div>
+        <button type="button" onclick="saveRecord()">Save</button>
+        <button type="button" onclick="fetchFirstRecord()">First</button>
+        <button type="button" onclick="fetchNextRecord()">Next</button>
+        <button type="button" onclick="fetchPreviousRecord()">Previous</button>
+        <button type="button" onclick="deleteRecord()">Delete</button>
+        <button type="button" onclick="updateRecord()">Update</button>
+    </form>
+
+    <script>
+        // Fetch First Record
+        function fetchFirstRecord() {
+            $.ajax({
+                url: "FetchFirstRecordServlet",
+                type: "GET",
+                success: function (response) {
+                    if (response) {
+                      
+                        var employeeDetails = response.split(",");
+                        var id = employeeDetails[0];
+                        var firstName = employeeDetails[1];
+                        var lastName = employeeDetails[2];
+                        var Email = employeeDetails[3];
+
+                        // Update the labels with employee details
+                        $("#id").val(id);
+                        $("#firstName").val(firstName);
+                        $("#lastName").val(lastName);
+                        $("#email").val(Email);
+                    } else {
+                        alert("No records found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while fetching the record: " + error);
+                }
+            });
+        }
+
+        // Fetch Next Record
+        function fetchNextRecord() {
+            var id = $("#id").val();
+            $.ajax({
+                url: "FetchNextRecordServlet",
+                type: "GET",
+                data: { id: id },
+                success: function (response) {
+                    if (response) {
+                        // Populate form fields with employee details
+                        var employeeDetails = response.split(",");
+                        var id = employeeDetails[0];
+                        var firstName = employeeDetails[1];
+                        var lastName = employeeDetails[2];
+                        var Email = employeeDetails[3];
+
+                        // Update the labels with employee details
+                        $("#id").val(id);
+                        $("#firstName").val(firstName);
+                        $("#lastName").val(lastName);
+                        $("#email").val(Email);
+                    } else {
+                        alert("No more records found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while fetching the record: " + error);
+                }
+            });
+        }
+
+        // Fetch Previous Record
+        function fetchPreviousRecord() {
+            var id = $("#id").val();
+            $.ajax({
+                url: "FetchPreviousRecordServlet",
+                type: "GET",
+                data: { id: id },
+                success: function (response) {
+                    if (response) {
+                        var employeeDetails = response.split(",");
+                        var id = employeeDetails[0];
+                        var firstName = employeeDetails[1];
+                        var lastName = employeeDetails[2];
+                        var Email = employeeDetails[3];
+
+                        // Update the labels with employee details
+                        $("#id").val(id);
+                        $("#firstName").val(firstName);
+                        $("#lastName").val(lastName);
+                        $("#email").val(Email);
+                    } else {
+                        alert("No more records found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while fetching the record: " + error);
+                }
+            });
+        }
+
+        // Delete Record
+               // Delete Record
+        function deleteRecord() {
+            var id = $("#id").val();
+            $.ajax({
+                url: "DeleteRecordServlet",
+                type: "POST",
+                data: { id: id },
+                success: function (response) {
+                    if (response === "success") {
+                        // Clear form fields
+                        $("#id").val("");
+                        $("#firstName").val("");
+                        $("#lastName").val("");
+                        $("#email").val("");
+                        alert("Record deleted successfully.");
+                    } else {
+                        alert("Failed to delete the record.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while deleting the record: " + error);
+                }
+            });
+        }
+
+        // Update Record
+        function updateRecord() {
+            var id = $("#id").val();
+            var firstName = $("#firstName").val();
+            var lastName = $("#lastName").val();
+            var email = $("#email").val();
+
+            $.ajax({
+                url: "UpdateRecordServlet",
+                type: "POST",
+                data: {
+                    id: id,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email
+                },
+                success: function (response) {
+                    if (response === "Success") {
+                        alert("Record updated successfully.");
+                    } else {
+                        alert("Failed to update the record.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while updating the record: " + error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Email Application</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="path/to/select2.min.js"></script>
+  <script>
+    // Function to fetch and populate the contacts from the server
+    function populateContacts() {
+      $.ajax({
+        url: 'fetchContacts',
+        type: 'GET',
+       
+        success: function(data) {
+            // Append the retrieved options to the dropdown list
+        	 $('#emailDropdown').append(data);
+
+             // Refresh the Select2 dropdown to update the options
+             $('#emailDropdown').select2('destroy');
+             $('#emailDropdown').select2();
+          }
+        ,
+        error: function(xhr, status, error) {
+          console.error(error);
+        }
+      });
+    }
+
+    // Call the populateContacts function on page load
+    $(document).ready(function() {
+    	
+      populateContacts();
+      
+    });
+//    $(document).ready(function() {
+  //  $('#emailDropdown').select2();
+
+ //   $('#Send').on('click', function() {
+      // Get the selected recipients from the dropdown list
+   //   var recipients = $('#emailDropdown').val();
+
+      // Convert the recipients array to JSON
+     // var jsonData = JSON.stringify(recipients);
+    //});
+  </script>
+  <script>
+  
+  function fun1(){
+		var recipients=$('#emailDropdown').val();
+		var subject=$('#subject').val();
+		var Scheduledate=$('#Scheduledate').val();
+		var body=$('#body').val();
+		('#Send').on('click', function() {
+		      // Get the selected recipients from the dropdown list
+		   var recipients = $('#emailDropdown').val();
+
+		      // Convert the recipients array to JSON
+		     var jsonData = JSON.stringify(recipients);
+		    });
+		$.ajax({
+			url:'EmailServlet',
+			method:'POST',
+			data:{
+				recipients: jsonData,subject:subject,body:body,Scheduledate:Scheduledate
+			},
+			
+			
+		})
+  </script>
+</head>
+<body>
+  <h1>Email Application</h1>
+  <form action="EmailServlet" method="POST">
+  
+    
+  <label for="emailDropdown">To:</label>
+  <select id="emailDropdown"  onchange="fun1()">
+    <!-- Options will be dynamically added here -->
+  </select>
+    <br>
+    <label for="subject">Subject:</label>
+    <input type="text" name="subject" id="subject" required>
+    <br>
+    <label for="scheduleDate">Schedule Date:</label>
+    <input type="date" name="scheduleDate" id="scheduleDate">
+    <br>
+    <label for="body">Body:</label>
+    <textarea name="body" id="body" required></textarea>
+    <br>
+    <button  onclick="fun1()" id=Send>Send</button>
+    
+    <button type="reset">Clear</button>
+  </form>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+
+<title>Railway Reservation</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<center>
+<h1>Train Reservation</h1></center>
+
+
+<script>
+function fun1(){
+	$.ajax({
+		url:'FromToTrainServlet',
+		method:'GET',
+		success: function(resultText){
+			$('#results').html(resultText);
+			$('#resultss').html(resultText);
+			
+		},
+		error:function(jqXHR,exception){
+			console.log('Error Occured!');
+		}
+	})
+}</script>
+<center>
+From : <Select id="results" ></Select>
+To : <Select id="resultss" Onchange="fun()"></Select>
+</center>
+<center><br><br>
+Date:<input type="text" id="date"/><br><br></center>
+<center><button onclick="fun1()">submit</button></center>
+<script>
+function fun(){
+	var from=$('#results').val();
+	var to=$('#resultss').val();
+	var dates=$('#date').val();
+	$('#From').val(from);
+	$('#To').val(to);
+	$.ajax({
+		url:'TrainFareServlet',
+		method:'GET',
+		data:{
+			from:from,to:to
+		},
+		success: function (resultText) {
+            $('#resultw').html(resultText);
+         },
+         error: function (jqXHR, exception) {
+             console.log('Error occured!!');
+          }
+	})
+	$.ajax({
+		url:'TrainsServlet',
 		
-		<form>
-  <h2>Passenger Details</h2>
-  <table>
+		method:'POST',
+		data:{
+			from:from,to:to,dates:dates
+		},
+        success: function (resultText) {
+            $('#resultw').html(resultText);
+         },
+         error: function (jqXHR, exception) {
+             console.log('Error occured!!');
+          }
+	})
+	
+}
+</script><br><br>
+<center><Select id="resultw" onChange="fun2()">
+</Select></center>
+<center>
+Class: <Select id="resultClass" Onchange="fun4class() "></Select>
+
+</center>
+<center><h1>Passenger Details</h1></center>
+<center>
+Train Number:<input type="text" id="TrainNo"/><br><br>
+Train Name:<input type="text" id="TrainName"/><br><br>
+From:<input type="text" id="From"/><br><br>
+To:<input type="text" id="To"/><br><br>
+Train Class:<input type="text" id="TrainClass"/><br><br>
+</center>
+<script>
+function fun2(){
+	var arr= $('#resultw').val().split(" ");
+	$('#TrainNo').val(arr[0]);
+	$('#TrainName').val(arr[1]);
+	$('#TrainClass').val(" ");
+	$.ajax({
+		url:'TrainClassServlet',
+		method:'GET',
+		data:{
+			TrainNo:arr[0]
+		},
+		 success: function(resultText) {
+		      $('#resultClass').html(resultText);
+		    },
+		    error: function(jqXHR, exception) {
+		      console.log('Error Occurred!');
+		    }
+		
+       
+	})
+	
+}
+</script>
+
+
+
+<script>
+function fun4class(){
+	var arr= $('#resultClass').val();
+	var arr1= $('#resultw').val().split(" ");
+	var from=$('#results').val();
+	var to=$('#resultss').val();
+	var dates=$('#date').val();
+	$('#TrainClass').val(arr);
+	
+	$.ajax({
+		url:'TrainFareServlet',
+		method:'GET',
+		data:{
+			from:from,to:to,TrainNo:arr1[0],Class:arr
+		},
+	
+	 success: function(resultText) {
+		      $('#resultClass').html(resultText);
+		    },
+		    error: function(jqXHR, exception) {
+		      console.log('Error Occurred!');
+		    }
+	})
+}
+</script>
+<center>
+ <table>
     <thead>
       <tr>
         <th>Passenger Name</th>
@@ -36,7 +1618,7 @@
     <tbody>
       <tr>
         <td><input type="text" name="passenger1_name" placeholder="Passenger 1 Name"></td>
-        <td><input type="number" name="passenger1_age" placeholder="Passenger 1 Age"></td>
+        <td><input type="text" name="passenger1_age" placeholder="Passenger 1 Age"></td>
         <td>
           <label><input type="radio" name="passenger1_gender" value="Male">Male</label>
           <label><input type="radio" name="passenger1_gender" value="Female">Female</label>
@@ -79,422 +1661,6 @@
         </td>
        
       </tr>
-
-
+      </center>
 </body>
 </html>
-
-@WebServlet("/train-search")
-public class TrainSearchServlet extends HttpServlet {
-    private TrainDAO trainDAO;
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        try {
-            trainDAO = new TrainDAO();
-        } catch (SQLException e) {
-            throw new ServletException(e);
-        }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Display the train search form
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/train-search.jsp");
-        dispatcher.forward(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Retrieve the source and destination from the form submission
-        String source = request.getParameter("source");
-        String destination = request.getParameter("destination");
-
-        // Query the database for trains between the source and destination
-        List<Train> trains;
-        try {
-            trains = trainDAO.getTrainsBySourceAndDestination(source, destination);
-        } catch (SQLException e) {
-            throw new ServletException(e);
-        }
-
-        // Pass the list of trains to the JSP page to be displayed
-        request.setAttribute("trains", trains);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/train-search-results.jsp");
-        dispatcher.forward(request, response);
-    }
-}
-
-
-
-<html>
-<head>
-    <title>Train Search</title>
-</head>
-<body>
-    <h1>Train Search</h1>
-    <form method="post" action="/train-search">
-        <label for="source">Source:</label>
-        <input type="text" id="source" name="source" required>
-        <br>
-        <label for="destination">Destination:</label>
-        <input type="text" id="destination" name="destination" required>
-        <br>
-        <button type="submit">Search</button>
-    </form>
-</body>
-</html>
-
-
-
-<html>
-<head>
-    <title>Train Search Results</title>
-</head>
-<body>
-    <h1>Train Search Results</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Train ID</th>
-                <th>Train Name</th>
-                <th>Source</th>
-                <th>Destination</th>
-                <th>Departure Time</th>
-                <th>Arrival Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach items="${trains}" var="train">
-                <tr>
-                    <td>${train.trainId}</td>
-                    <td>${train.trainName}</td>
-                    <td>${train.source}</td>
-                    <td>${train.destination}</td>
-                    <td>${train.departureTime}</td>
-                    <td>${train.arrivalTime}</td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-</body>
-</html>
-
-create table sow_stn( stn_code char(10) not null,  stn_name varchar(100), primary key(stn_code))
-drop table sow_stn;
-
-create table sow_stn_dis(fst_code char(10), tst_code char(10), std_dist int )
-ALTER TABLE sow_stn_dis ADD CONSTRAINT fk_fst_customers FOREIGN KEY (fst_code) REFERENCES sow_stn (stn_code);
-ALTER TABLE sow_stn_dis ADD CONSTRAINT fk_tst_customers FOREIGN KEY (tst_code) REFERENCES sow_stn (stn_code);
-
-create table sow_trains (tr_no int primary key, tr_name varchar(100), tr_type char(10), tr_start char(10), tr_end char(10), tr_surcharge numeric)
-ALTER TABLE sow_trains  ADD CONSTRAINT fk_tr_start FOREIGN KEY (tr_start) REFERENCES sow_stn (stn_code);
-ALTER TABLE sow_trains  ADD CONSTRAINT fk_tr_end FOREIGN KEY (tr_end) REFERENCES sow_stn (stn_code);
-Alter table sow_trains add column trn_status char(10)
-
-create table sow_trn_stations (tr_no int, stn_code char(10) ,trs_index INT, Primary key (tr_no, stn_code));
-create table sow_tr_fares(far_dist int, far_basefare numeric)
-create table tn_tvl_classes(tr_no int, tr_tvl_class char(10) , far_factor NUMERIC, primary key (tr_no, tr_tvl_class))
-create table sow_tickets(tk_id int primary key, pnr_no int, tk_tr_no int, tk_tr_date date, tk_from char(10), tk_to char(10), tk_tr_class char(3), tk_totalfare numeric)
-ALTER TABLE sow_tickets  ADD CONSTRAINT fk_tr_tno FOREIGN KEY (tk_tr_no) REFERENCES sow_trains (tr_no);
-ALTER TABLE sow_tickets ADD CONSTRAINT fk_tk_from FOREIGN KEY (tk_from) REFERENCES sow_stn (stn_code);
-ALTER TABLE sow_tickets  ADD CONSTRAINT fk_tk_to FOREIGN KEY (tk_to) REFERENCES sow_stn (stn_code);
-create table sow_pass (tk_id int, tk_pindex int, tkt_name varchar(100), tkt_age int, tkt_gender char(10), tkt_amt numeric, primary key(tk_id, tk_pindex))
-ALTER TABLE sow_pass  ADD CONSTRAINT fk_tk_id FOREIGN KEY (tk_id) REFERENCES sow_tickets (tk_id);
-
-
-insert into sow_stn values('ND','NEW DELHI');
-insert into sow_stn values('KNP','KANPUR');
-insert into sow_stn values ('PRG','PRYAGRA JUNCTION');    
-insert into sow_stn values ('UPJ', 'UPADHYAYA');
-insert into sow_stn values('HJL','HIJILI');
-insert into sow_stn values('CTK','CUTTACK');
-insert into sow_stn values('BBR','BHUBANESWAR');
-insert into sow_stn values('HYD','HYDERABAD'); 
-insert into sow_stn values('SND','SECUNDERABAD'); 
-insert into sow_stn values('WGR','WARANGAL'); 
-insert into sow_stn values('KMM','KAMAM');
-insert into sow_stn values('VJY','VIJAYAWADA'); 
-insert into sow_stn values('ELU','ELLURU');
-insert into sow_stn values('TPJ','TADEPALLI GUDEM'); 
-insert into sow_stn values('RJY','RAJAHMUNDRY'); 
-insert into sow_stn values('ANV','ANNAVARAM'); 
-insert into sow_stn values('TUN','TUNI');
-insert into sow_stn values('AKP', 'ANAKAPALLI'); 
-insert into sow_stn values('VSKP','VISAKHAPATNAM'); 
-insert into sow_stn values('NZV', 'NUZVEEDU'); 
-insert into sow_stn values('BHD','BHEMADOLU'); 
-insert into sow_stn values('NDV', 'NIDAVOLU'); 
-insert into sow_stn values('DVP','DVAARAPUDI' ); 
-insert into sow_stn values('DUV','DUVVADA')   ; 
-insert into sow_stn values('TRP','TIRUPATHI'); 
-insert into sow_stn values('KDP','KADAPA'); 
-insert into sow_stn values('KDR','KODURU'); 
-insert into sow_stn values('PKL','PAKALA'); 
-insert into sow_stn values('KDR','KADIR'); 
-insert into sow_stn values('ANT','ANANTHAPURAM'); 
-insert into sow_stn values('MBB','MAHABOOB NAGAR');
-
-insert into sow_stn_dis values('ND','KNP', 440);
-insert into sow_stn_dis values('KNP','PRG', 194);
-insert into sow_stn_dis values('PRJ','UPJ',152 );
-insert into sow_stn_dis values('UPJ','HJL',698 );
-insert into sow_stn_dis values('HJL','CTK', 318 );
-insert into sow_stn_dis values('CTK','BBR',28 );
-insert into sow_stn_dis values('HYD','SND',7);
-insert into sow_stn_dis values('SND','WGL',142 );
-insert into sow_stn_dis values('WGL','KMM',108 );
-insert into sow_stn_dis values('KMM','VJY', 99 );
-insert into sow_stn_dis values('VJY','ELU',  59);
-insert into sow_stn_dis values('ELU','TPJ', 48 );
-insert into sow_stn_dis values('TPJ','RJY',42  );
-insert into sow_stn_dis values('RJY','ANV',87  );
-insert into sow_stn_dis values('ANV','TUN',17  );
-insert into sow_stn_dis values('TUN','AKP',64  );
-insert into sow_stn_dis values('AKP','VSKP',33  );
-
-insert into sow_stn_dis values('TRP','PKL',41  );
-insert into sow_stn_dis values('PKL','KDR',161  );
-insert into sow_stn_dis values('KDR','ANT',102  );
-insert into sow_stn_dis values('ANT','MBB',297  );
-insert into sow_stn_dis values('MBB','HYD',106  );
-
-insert into sow_stn_dis values('KDP','KDR',84  );
-insert into sow_stn_dis values('KDR','TRP',51  );
-insert into sow_stn_dis values('TRP','VJY',386  );
-insert into sow_stn_dis values('VJY','NZV',41  );
-insert into sow_stn_dis values('NZV','ELU', 19 );
-insert into sow_stn_dis values('ELU','TPJ',48  );
-insert into sow_stn_dis values('TPJ','NDV',20  );
-insert into sow_stn_dis values('NDV','DRP',42  );
-insert into sow_stn_dis values('DRP','PTP',42  );
-insert into sow_stn_dis values('PTP','ANV',25  );
-
-insert into sow_stn_dis values('ANK','DUV', 15 );
-insert into sow_stn_dis values('DUV','VSKP',  18);
-
-
-insert into sow_trains values(22824,'RAJDHANI', 'EXPR','ND','BBR',20 );
-insert into sow_trains values(12788,'GODAVARI', 'GEN','HYD','VJY',15 );
-insert into sow_trains values(12774,'SHALIMAR', 'SPFST/AC','SND','VSKP',40 );
-insert into sow_trains values(17487,'TIRUMALA', 'EXPR','KDP','HYD', 23);
-insert into sow_trains values(07605,'AKOLA', 'SPCL','TRP','HYD',30 );
-UPDATE SOW_TRAINS SET TR_START='SND' WHERE TR_NO=12774
-UPDATE SOW_TRAINS SET TRN_STATUS='RN' WHERE TR_NO=12774
-UPDATE SOW_TRAINS SET TRN_STATUS='RN' WHERE TR_NO=22824
-UPDATE SOW_TRAINS SET TRN_STATUS='STP' WHERE TR_NO=12788
-UPDATE SOW_TRAINS SET TRN_STATUS='RN' WHERE TR_NO=17487
-insert into sow_trn_sTATIONS(tr_no , stn_code, trs_index  ) values(22824,'ND',0);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(22824,'KNP',1);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(22824,'PRG',2);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(22824,'UPJ',3);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(22824,'HJL',4);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(22824,'CTK',5);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(22824,'BBR',6);
-                                                                  
-insert into sow_trn_sTATIONS(tr_no , stn_code,trs_index  ) values(12728,'HYD',0);
-insert into sow_trn_sTATIONS(tr_no , stn_code,trs_index  ) values(12728,'SND',1);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12728,'WGL',2);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12728,'KMM',3);
-insert into sow_trn_sTATIONS(tr_no , stn_code,trs_index ) values(12728,'VJY',4);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12728,'ELU',5);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12728,'TPJ',6);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12728,'RJY',7);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12728,'ANV',8);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12728,'TUN',9);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index  ) values(12728,'ANK',10);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12728,'VSKP',11);
-insert into sow_trn_sTATIONS(tr_no , stn_code,trs_index  ) values(12774,'SND',0);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12774,'RJY',2);
-insert into sow_trn_sTATIONS(tr_no , stn_code,trs_index  ) values(12774,'WGL',1);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(12774,'VSKP',3);
-insert into sow_trn_sTATIONS(tr_no , stn_code,trs_index  ) values(07605,'TRP',0);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(07605,'PKL',1);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(07605,'KDR',2);
-insert into sow_trn_sTATIONS(tr_no , stn_code,trs_index  ) values(07605,'ANT',3);
-insert into sow_trn_sTATIONS(tr_no , stn_code,trs_index  ) values(07605,'MBB',4);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(07605,'HYD',5);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'KDP',1);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'KDR',2);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'TRP',3);
-insert into sow_trn_sTATIONS(tr_no , stn_code,trs_index  ) values(17487,'VJY',4);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'NZV',5);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'NDV',8);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index  ) values(17487,'PTP',11);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'TUN',13);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'ANV',12);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'DRP',10);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'TPJ',7);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'ANK',14);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'DUV',15);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'RJY',9);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'ELU',6);
-insert into sow_trn_sTATIONS(tr_no , stn_code ,trs_index ) values(17487,'VSKP',16);
-
-INSERT INTO tn_tvl_classes VALUES(22824,'1AC',1.7);
-INSERT INTO tn_tvl_classes VALUES(22824,'2AC',2.2);
-INSERT INTO tn_tvl_classes VALUES(22824,'3AC',3.6);
-INSERT INTO tn_tvl_classes VALUES(22824,'SLP',4.8);
-
-INSERT INTO tn_tvl_classes VALUES(12728,'1AC',1.7);
-INSERT INTO tn_tvl_classes VALUES(12728,'2AC',2.2);
-INSERT INTO tn_tvl_classes VALUES(12728,'3AC',3.6);
-INSERT INTO tn_tvl_classes VALUES(12728,'SLP',4.8);
-
-INSERT INTO tn_tvl_classes VALUES(12774,'1AC',1.7);
-INSERT INTO tn_tvl_classes VALUES(12774,'2AC',2.2);
-INSERT INTO tn_tvl_classes VALUES(12774,'3AC',3.6);
-
-INSERT INTO tn_tvl_classes VALUES(07605,'1AC',1.7);
-INSERT INTO tn_tvl_classes VALUES(07605,'2AC',2.2);
-INSERT INTO tn_tvl_classes VALUES(07605,'3AC',3.6);
-
-
-INSERT INTO tn_tvl_classes VALUES(17487,'1AC',1.7);
-INSERT INTO tn_tvl_classes VALUES(17487,'2AC',2.2);
-INSERT INTO tn_tvl_classes VALUES(17487,'3AC',3.6);
-INSERT INTO tn_tvl_classes VALUES(17487,'SLP',4.4);
-
-
-INSERT INTO sow_tr_fares VALUES(10,12);
-INSERT INTO sow_tr_fares VALUES(50,22);
-INSERT INTO sow_tr_fares VALUES(100,40);
-INSERT INTO sow_tr_fares VALUES(150,68);
-INSERT INTO sow_tr_fares VALUES(200,75);
-INSERT INTO sow_tr_fares VALUES(500,90);
-INSERT INTO sow_tr_fares VALUES(1000,125);
-
-SELECT * from sow_stn;
-SELECT * from sow_stn_dis;
-SELECT * from sow_trains;
-SELECT * from sow_trn_stations;
-SELECT * from sow_tr_fares;
-SELECT * from sow_tickets;
-SELECT * from sow_pass;
-SELECT * from tn_tvl_classes;
-
-drop table sow_trn_stations;
-drop table sow_pass;
-drop table sow_tickets;
-drop table tn_tvl_classes;
-drop table sow_tr_fares;
-drop table sow_trains;
-drop table sow_stn_dis;
-
-CREATE or replace FUNCTION TicketsInsert1(tk_tr_no integer,tk_from char(10), tk_to char(10),tk_tr_class char(10))
-  RETURNS void AS
-  $BODY$
-  declare 
---   ts Timestamp;
---   y text;
---   mo text;
---   d text;
---   h text;
---   mi text;
---   s text;
---   td int;
-rv float;
-      BEGIN
-      rv:= random();
-       rv:= (rv*7657656 );        
- 
--- 	 ts := Current_timestamp;       
--- 	y := extract(year from ts):: text;
---     mo := extract(month from ts):: text;
---     d := extract(day from ts):: text;
---     h := extract(hour from ts):: text;
---     mi := extract(minute from ts):: text;
---     s := extract(second from ts):: text;
--- 	        s:= y+mo+d+h+mi+s;
---             td := cast(s as integer);
-        
-        INSERT INTO sow_tickets(tk_id,pnr_no,tk_tr_no ,tk_tr_date,tk_from , tk_to ,tk_tr_class )
-        VALUES(rv,rv+1,tk_tr_no ,current_date,tk_from , tk_to ,tk_tr_class);
-     
-      
-      END;
-  $BODY$
-  LANGUAGE 'plpgsql' 
-  
-
-  select TicketsInsert1(07605,'HYD','VSKP','1AC')
-
-
-import java.io.*;
-import java.sql.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-public class RouteDropdownServlet extends HttpServlet {
-  
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    
-    // Set up database connection
-    String url = "jdbc:mysql://localhost:3306/train_app";
-    String user = "username";
-    String password = "password";
-    Connection conn = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-    
-    try {
-      Class.forName("com.mysql.jdbc.Driver");
-      conn = DriverManager.getConnection(url, user, password);
-      
-      // Prepare SQL statement to retrieve distinct from_location and to_location values
-      String sql = "SELECT DISTINCT from_location, to_location FROM train_routes";
-      stmt = conn.prepareStatement(sql);
-      rs = stmt.executeQuery();
-      
-      // Retrieve from_location and to_location values from the ResultSet
-      List<String> fromLocations = new ArrayList<>();
-      List<String> toLocations = new ArrayList<>();
-      while (rs.next()) {
-        String fromLocation = rs.getString("from_location");
-        String toLocation = rs.getString("to_location");
-        fromLocations.add(fromLocation);
-        toLocations.add(toLocation);
-      }
-      
-      // Set response content type
-      response.setContentType("text/html");
-      
-      // Write out the from_location and to_location values as dropdown buttons
-      PrintWriter out = response.getWriter();
-      out.println("<html>");
-      out.println("<head><title>Select Route</title></head>");
-      out.println("<body>");
-      out.println("<form>");
-      out.println("<label for='from_location'>From:</label>");
-      out.println("<select name='from_location' id='from_location'>");
-      for (String fromLocation : fromLocations) {
-        out.println("<option value='" + fromLocation + "'>" + fromLocation + "</option>");
-      }
-      out.println("</select>");
-      out.println("<br/><br/>");
-      out.println("<label for='to_location'>To:</label>");
-      out.println("<select name='to_location' id='to_location'>");
-      for (String toLocation : toLocations) {
-        out.println("<option value='" + toLocation + "'>" + toLocation + "</option>");
-      }
-      out.println("</select>");
-      out.println("<br/><br/>");
-      out.println("<input type='submit' value='Search'/>");
-      out.println("</form>");
-      out.println("</body></html>");
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    } finally {
-      // Close database resources
-      try { rs.close(); } catch (Exception e) { /* ignored */ }
-      try { stmt.close(); } catch (Exception e) { /* ignored */ }
-      try { conn.close(); } catch (Exception e) { /* ignored */ }
-    }
-    
-  }
-  
-}
