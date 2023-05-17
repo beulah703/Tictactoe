@@ -1,5 +1,817 @@
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class PassengerServlet
+ */
+@WebServlet("/PassengerServlet")
+public class PassengerServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//System.out.println(request.getParameter("TrainNo"));
+		String Trno = request.getParameter("TrainNo");
+		String Trname = request.getParameter("TrainName");
+		String from = request.getParameter("From");
+		String to = request.getParameter("To");
+		String Class = request.getParameter("TrainClass");
+		String Fare1 = request.getParameter("fare1");
+		String Fare2 = request.getParameter("fare2");
+		String Fare3 = request.getParameter("fare3");
+		String Fare4 = request.getParameter("fare4");
+		String Fare5 = request.getParameter("fare5");
+		String p1n = request.getParameter("passenger1_name");
+		String p2n = request.getParameter("passenger2_name");
+		String p3n = request.getParameter("passenger3_name");
+		String p4n = request.getParameter("passenger4_name");
+		String p5n = request.getParameter("passenger5_name");
+		String p1a = request.getParameter("passenger1_age");
+		String p2a = request.getParameter("passenger2_age");
+		String p3a = request.getParameter("passenger3_age");
+		String p4a = request.getParameter("passenger4_age");
+		String p5a = request.getParameter("passenger5_age");
+		
+//		int Trno = 1234;
+//		String Trname = null;
+//		String from = "ND";
+//		String to = "BBR";
+//		String Class = "1AC";
+//		int Fare =2;
+		System.out.println(Trno);
+		System.out.println(Trname);
+		System.out.println(from);
+		System.out.println(to);
+		System.out.println(Class);
+		System.out.println(Fare1);
+		
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		out.println("<html>");
+		out.println("<head>");
+		out.println("<title> TICKET DETAILS</title>");
+		out.println("</head>");
+		out.println("<body>");
+		out.println("<h1>Ticket Details</h1>");
+		out.println("<table>");
+		out.println("<tr><th>Train number</th><th>Train Name</th><th>From</th><th>To</th><th>Class</th><th>Passenger Name</th><th>Passenger Age</th><th>Fare</th>");
+		out.println("<tr><td>" + Trno + "</td><td>" + Trname + "</td><td>" + from + "</td><td>" + to + "</td><td>"
+				+ Class + "</td><td>"+p1n + "</td><td>"+p1a + "</td><td>" + Fare1 + "</td>");
+		out.println("<tr><td>" + Trno + "</td><td>" + Trname + "</td><td>" + from + "</td><td>" + to + "</td><td>"
+				+ Class + "</td><td>"+p2n + "</td><td>"+p2a + "</td><td>" + Fare2 + "</td>");
+		out.println("<tr><td>" + Trno + "</td><td>" + Trname + "</td><td>" + from + "</td><td>" + to + "</td><td>"
+				+ Class + "</td><td>"+p3n + "</td><td>"+p3a + "</td><td>" + Fare3 + "</td>");
+		out.println("<tr><td>" + Trno + "</td><td>" + Trname + "</td><td>" + from + "</td><td>" + to + "</td><td>"
+				+ Class + "</td><td>"+p4n + "</td><td>"+p4a + "</td><td>" + Fare4 + "</td>");
+		out.println("<tr><td>" + Trno + "</td><td>" + Trname + "</td><td>" + from + "</td><td>" + to + "</td><td>"
+				+ Class + "</td><td>"+p5n + "</td><td>"+p5a + "</td><td>" + Fare5 + "</td>");
+
+		out.println("</table>");
+		out.println("</body>");
+		out.println("<html>");
+
+		out.println("</html>");
+
+	}
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+
+<title>Railway Reservation</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<center>
+<h1>Train Reservation</h1></center>
+
+
+<script>
+function fun1(){
+	$.ajax({
+		url:'FromToTrainServlet',
+		method:'GET',
+		success: function(resultText){
+			$('#results').html(resultText);
+			$('#resultss').html(resultText);
+			
+		},
+		error:function(jqXHR,exception){
+			console.log('Error Occured!');
+		}
+	})
+}</script>
+<center>
+From : <Select id="results" ></Select>
+To : <Select id="resultss" Onchange="fun()"></Select>
+</center>
+<center><br><br>
+Date:<input type="text" id="date"/><br><br></center>
+<center><button onclick="fun1()">submit</button></center>
+<script>
+function fun(){
+	var from=$('#results').val();
+	var to=$('#resultss').val();
+	var dates=$('#date').val();
+	$('#From').val(from);
+	$('#To').val(to);
+	$.ajax({
+		url:'TrainFareServlet',
+		method:'GET',
+		data:{
+			from:from,to:to
+		},
+		success: function (resultText) {
+            $('#resultw').html(resultText);
+         },
+         error: function (jqXHR, exception) {
+             console.log('Error occured!!');
+          }
+	})
+	$.ajax({
+		url:'TrainsServlet',
+		
+		method:'POST',
+		data:{
+			from:from,to:to,dates:dates
+		},
+        success: function (resultText) {
+            $('#resultw').html(resultText);
+         },
+         error: function (jqXHR, exception) {
+             console.log('Error occured!!');
+          }
+	})
+	
+}
+</script><br><br>
+<center><Select id="resultw" onChange="fun2()">
+</Select></center>
+<center>
+Class: <Select id="resultClass" Onchange="fun4class()"></Select>
+
+</center>
+<form action="PassengerServlet" method="POST" >
+<center><h1>Train Details</h1></center>
+<center>
+
+Train Number:<input type="text" name="TrainNo" id="TrainNo"/><br><br>
+Train Name:<input type="text" name="TrainName" id="TrainName"/><br><br>
+From:<input type="text" name="From" id="From"/><br><br>
+To:<input type="text" name="To" id="To"/><br><br>
+Train Class:<input type="text" name="TrainClass" id="TrainClass"/><br><br>
+Fare1:<input type="text" name="fare1" id="fare1" /><br><br>
+Fare2:<input type="text" name="fare2" id="fare2" /><br><br>
+Fare3:<input type="text" name="fare3" id="fare3" /><br><br>
+Fare4:<input type="text" name="fare4" id="fare4" /><br><br>
+Fare5:<input type="text" name="fare5" id="fare5" /><br><br>
+
+  <h2>Passenger 1:</h2>
+ 
+  Name:<input type="text" id="passenger1_name" name="passenger1_name">
+  <br>
+  <label for="passenger1_age">Age:</label>
+  <input type="text" id="passenger1_age" name="passenger1_age">
+  <br>
+  <label><input type="radio" name="passenger1_gender" value="Male" onclick="updateGenderTextField(this.value)">Male</label>
+  <label><input type="radio" name="passenger1_gender" value="Female" onclick="updateGenderTextField(this.value)">Female</label>
+   <h2>Passenger 2:</h2>
+  <label for="passenger2_name">Name:</label>
+  <input type="text" id="passenger2_name" name="passenger2_name">
+  <br>
+  <label for="passenger2_age">Age:</label>
+  <input type="text" id="passenger2_age" name="passenger2_age">
+  <br>
+  <label><input type="radio" name="passenger2_gender" value="Male" onclick="updateGenderTextField(this.value)">Male</label>
+  <label><input type="radio" name="passenger2_gender" value="Female" onclick="updateGenderTextField(this.value)">Female</label>
+  <br>
+
+  <!-- Repeat the above fields for Passenger 2, Passenger 3, Passenger 4, and Passenger 5 -->
+
+  <h2>Passenger 3:</h2>
+  <label for="passenger3_name">Name:</label>
+  <input type="text" id="passenger3_name" name="passenger3_name">
+  <br>
+  <label for="passenger3_age">Age:</label>
+  <input type="text" id="passenger3_age" name="passenger3_age">
+  <br>
+  <label><input type="radio" name="passenger3_gender" value="Male" onclick="updateGenderTextField(this.value)">Male</label>
+  <label><input type="radio" name="passenger3_gender" value="Female" onclick="updateGenderTextField(this.value)">Female</label>
+  <br>
+
+  <h2>Passenger 4:</h2>
+  <label for="passenger4_name">Name:</label>
+  <input type="text" id="passenger4_name" name="passenger4_name">
+  <br>
+  <label for="passenger4_age">Age:</label>
+  <input type="text" id="passenger4_age" name="passenger4_age">
+  <br>
+  <label><input type="radio" name="passenger4_gender" value="Male" onclick="updateGenderTextField(this.value)">Male</label>
+  <label><input type="radio" name="passenger4_gender" value="Female" onclick="updateGenderTextField(this.value)">Female</label>
+  <br>
+<h2>Passenger 5:</h2>
+  <label for="passenger5_name">Name:</label>
+  <input type="text" id="passenger5_name" name="passenger5_name">
+  <br>
+  <label for="passenger5_age">Age:</label>
+  <input type="text" id="passenger5_age" name="passenger5_age" onchange="fun4class()">
+  <br>
+  <label><input type="radio" name="passenger5_gender" value="Male" onclick="fun4class()">Male</label>
+  <label><input type="radio" name="passenger5_gender" value="Female" onclick="fun4class()">Female</label>
+  <br>
+
+
+
+
+ <input type="submit" value="Submit">
+ 
+</center>
+</form>
+
+
+
+<script>
+function fun2(){
+	var arr= $('#resultw').val().split(" ");
+	$('#TrainNo').val(arr[0]);
+	$('#TrainName').val(arr[1]);
+	$('#TrainClass').val(" ");
+	$.ajax({
+		url:'TrainClassServlet',
+		method:'POST',
+		data:{
+			TrainNo:arr[0]
+		},
+		 success: function(resultText) {
+		      $('#resultClass').html(resultText);
+		    },
+		    error: function(jqXHR, exception) {
+		      console.log('Error Occurred!');
+		    }
+		
+       
+	})
+	
+}
+</script>
+
+
+
+<script>
+function fun4class(){
+	var arr= $('#resultClass').val();
+	var arr1= $('#resultw').val().split(" ");
+	var from=$('#results').val();
+	var to=$('#resultss').val();
+	var dates=$('#date').val();
+	var p1age=$('#passenger1_age').val();
+	var p2age=$('#passenger2_age').val();
+	var p3age=$('#passenger3_age').val();
+	var p4age=$('#passenger4_age').val();
+	var p5age=$('#passenger5_age').val();
+	
+	$('#TrainClass').val(arr);
+	
+	$.ajax({
+		url:'TrainFareServlet',
+		method:'POST',
+		data:{
+			from:from,to:to,TrainNo:arr1[0],Class:arr,p1age:p1age,p2age:p2age,p3age:p3age,p4age:p4age,p5age:p5age
+		},
+	
+	 success: function(resultText) {
+		      $('#resultClass').html(resultText);
+		    },
+		    error: function(jqXHR, exception) {
+		      console.log('Error Occurred!');
+		    }
+	})
+}
+</script>
+<script>
+function fun5pass(){
+	var arr= $('#TrainNo').val();
+	var arr1= $('#TrainName').val();
+	var from=$('#From').val();
+	var to=$('#To').val();
+	var dates=$('#TrainClass').val();
+	var datess=$('#fare').val();
+	
+	
+	
+	
+	$.ajax({
+		url:'PassengerServlet',
+		method:'POST',
+		data:{
+			TrainNo:arr,TrainName:arr1,From:from,To:to,TrainClass:dates,fare:datess
+		}
+		
+	
+	
+	})
+}
+</script>
+<script >
+function fares() {
+    $.ajax({
+        url: "TrainFareServlet",
+        type: "POST",
+        success: function (response) {
+        
+        	if(response){
+  			  var fare = response;     
+            $('#fare').val(fare);
+           
+        	}
+        	else{
+        		alert("Error");
+        	}
+           
+        },
+        error: function (xhr, status, error) {
+            alert("An error occurred while fetching the record: " + error);
+        }
+    });
+}</script>
+
+
+<script>
+  function updateGenderTextField(value) {
+    var genderTextField = document.getElementById("genderTextField");
+    genderTextField.value = value;
+  }
+
+  function updatePassengerDetails() {
+    var passengers = [];
+
+    for (var i = 1; i <= 5; i++) {
+    var Trainno=document.getElementById("TrainNo").value;
+    var TrainName=document.getElementById("TrainName").value;
+    var TrainClass=document.getElementById("TrainClass").value;
+    var Fare=document.getElementById("fare").value;
+    var From=document.getElementById("From").value;
+    var To=document.getElementById("To").value;
+      var passengerName = document.getElementById("passenger" + i + "_name").value;
+      var passengerAge = document.getElementById("passenger" + i + "_age").value;
+      var passengerGender = document.querySelector('input[name="passenger' + i + '_gender"]:checked').value;
+
+      if (!validateAge(passengerAge)) {
+        alert("Please enter a valid age (numeric value between 1 and 150) for Passenger " + i + ".");
+        return;
+      }
+
+      passengers.push({
+        name: passengerName,
+        age: passengerAge,
+        gender: passengerGender,
+        Trainno:Trainno,
+        TrainName:TrainName,
+        TrainClass: TrainClass,
+        Fare:fare,
+        From:From,
+        To:To
+        
+      });
+    }
+
+    for (var i = 0; i < passengers.length; i++) {
+      var passenger = passengers[i];
+      document.getElementById("passenger" + (i + 1) + "_name_display").textContent = passenger.name;
+      document.getElementById("passenger" + (i + 1) + "_age_display").textContent = passenger.age;
+      document.getElementById("passenger" + (i + 1) + "_gender_display").textContent = passenger.gender;
+    }
+    document.getElementById( "Trainno_display").textContent = passenger.Trainno;
+    document.getElementById("Trainname_display").textContent = passenger.TrainName;
+    document.getElementById("TrainClass_display").textContent = passenger.TrainClass;
+    document.getElementById("From_display").textContent = passenger.From;
+    document.getElementById("To_display").textContent = passenger.To;
+    document.getElementById("Fare_display").textContent = passenger.Fare;
+  }
+
+  function validateAge(age) {
+    var ageValue = parseInt(age);
+    return !isNaN(ageValue) && ageValue > 0 && ageValue < 150;
+  }
+</script>
+
+<button onclick="updatePassengerDetails()">Update Passenger Details</button>
+
+<h2>Passenger 1 Details:</h2>
+<p>Name: <span id="passenger1_name_display"></span></p>
+<p>Age: <span id="passenger1_age_display"></span></p>
+
+<p>Gender: <span id="passenger1_gender_display"></span></p>
+<!-- Display details for Passenger 2, Passenger 3, Passenger 4, and Passenger 5 -->
+<h2>Passenger 2 Details:</h2>
+<p>Name: <span id="passenger2_name_display"></span></p>
+<p>Age: <span id="passenger2_age_display"></span></p>
+<p>Gender: <span id="passenger2_gender_display"></span></p>
+<!-- Details for Passenger 3, Passenger 4, and Passenger 5 -->
+<!-- ... -->
+<h2>Passenger 3 Details:</h2>
+<p>Name: <span id="passenger3_name_display"></span></p>
+<p>Age: <span id="passenger3_age_display"></span></p>
+<p>Gender: <span id="passenger3_gender_display"></span></p>
+<h2>Passenger 4 Details:</h2>
+<p>Name: <span id="passenger4_name_display"></span></p>
+<p>Age: <span id="passenger4_age_display"></span></p>
+<p>Gender: <span id="passenger4_gender_display"></span></p>
+<h2>Passenger 5 Details:</h2>
+<p>Name: <span id="passenger5_name_display"></span></p>
+<p>Age: <span id="passenger5_age_display"></span></p>
+<p>Gender: <span id="passenger5_gender_display"></span></p>
+<h2>Ticket Details:</h2>
+<p>Train No: <span id="Trainno_display"></span></p>
+<p>Train Name: <span id="Trainname_display"></span></p>
+<p>Train Class: <span id="TrainClass_display"></span></p>
+<p>Source: <span id="From_display"></span></p>
+<p>Destination: <span id="To_display"></span></p>
+<p>Fare: <span id="Fare_display"></span></p>
+
+
+</center>
+
+</body>
+</html>
+
+<!
+DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+
+<title>Railway Reservation</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<center>
+<h1>Train Reservation</h1></center>
+
+
+<script>
+function fun1(){
+	$.ajax({
+		url:'FromToTrainServlet',
+		method:'GET',
+		success: function(resultText){
+			$('#results').html(resultText);
+			$('#resultss').html(resultText);
+			
+		},
+		error:function(jqXHR,exception){
+			console.log('Error Occured!');
+		}
+	})
+}</script>
+<center>
+From : <Select id="results" ></Select>
+To : <Select id="resultss" Onchange="fun()"></Select>
+</center>
+<center><br><br>
+Date:<input type="text" id="date"/><br><br></center>
+<center><button onclick="fun1()">submit</button></center>
+<script>
+function fun(){
+	var from=$('#results').val();
+	var to=$('#resultss').val();
+	var dates=$('#date').val();
+	$('#From').val(from);
+	$('#To').val(to);
+	$.ajax({
+		url:'TrainFareServlet',
+		method:'GET',
+		data:{
+			from:from,to:to
+		},
+		success: function (resultText) {
+            $('#resultw').html(resultText);
+         },
+         error: function (jqXHR, exception) {
+             console.log('Error occured!!');
+          }
+	})
+	$.ajax({
+		url:'TrainsServlet',
+		
+		method:'POST',
+		data:{
+			from:from,to:to,dates:dates
+		},
+        success: function (resultText) {
+            $('#resultw').html(resultText);
+         },
+         error: function (jqXHR, exception) {
+             console.log('Error occured!!');
+          }
+	})
+	
+}
+</script><br><br>
+<center><Select id="resultw" onChange="fun2()">
+</Select></center>
+<center>
+Class: <Select id="resultClass" Onchange="fun4class()"></Select>
+
+</center>
+<form action="PassengerServlet" method="POST" >
+<center><h1>Train Details</h1></center>
+<center>
+
+Train Number:<input type="text" name="TrainNo" id="TrainNo"/><br><br>
+Train Name:<input type="text" name="TrainName" id="TrainName"/><br><br>
+From:<input type="text" name="From" id="From"/><br><br>
+To:<input type="text" name="To" id="To"/><br><br>
+Train Class:<input type="text" name="TrainClass" id="TrainClass"/><br><br>
+Fare1:<input type="text" name="fare1" id="fare1" /><br><br>
+Fare2:<input type="text" name="fare2" id="fare2" /><br><br>
+Fare3:<input type="text" name="fare3" id="fare3" /><br><br>
+Fare4:<input type="text" name="fare4" id="fare4" /><br><br>
+Fare5:<input type="text" name="fare5" id="fare5" /><br><br>
+
+  <h2>Passenger 1:</h2>
+ 
+  Name:<input type="text" id="passenger1_name" name="passenger1_name">
+  <br>
+  <label for="passenger1_age">Age:</label>
+  <input type="text" id="passenger1_age" name="passenger1_age">
+  <br>
+  <label><input type="radio" name="passenger1_gender" value="Male" onclick="updateGenderTextField(this.value)">Male</label>
+  <label><input type="radio" name="passenger1_gender" value="Female" onclick="updateGenderTextField(this.value)">Female</label>
+   <h2>Passenger 2:</h2>
+  <label for="passenger2_name">Name:</label>
+  <input type="text" id="passenger2_name" name="passenger2_name">
+  <br>
+  <label for="passenger2_age">Age:</label>
+  <input type="text" id="passenger2_age" name="passenger2_age">
+  <br>
+  <label><input type="radio" name="passenger2_gender" value="Male" onclick="updateGenderTextField(this.value)">Male</label>
+  <label><input type="radio" name="passenger2_gender" value="Female" onclick="updateGenderTextField(this.value)">Female</label>
+  <br>
+
+  <!-- Repeat the above fields for Passenger 2, Passenger 3, Passenger 4, and Passenger 5 -->
+
+  <h2>Passenger 3:</h2>
+  <label for="passenger3_name">Name:</label>
+  <input type="text" id="passenger3_name" name="passenger3_name">
+  <br>
+  <label for="passenger3_age">Age:</label>
+  <input type="text" id="passenger3_age" name="passenger3_age">
+  <br>
+  <label><input type="radio" name="passenger3_gender" value="Male" onclick="updateGenderTextField(this.value)">Male</label>
+  <label><input type="radio" name="passenger3_gender" value="Female" onclick="updateGenderTextField(this.value)">Female</label>
+  <br>
+
+  <h2>Passenger 4:</h2>
+  <label for="passenger4_name">Name:</label>
+  <input type="text" id="passenger4_name" name="passenger4_name">
+  <br>
+  <label for="passenger4_age">Age:</label>
+  <input type="text" id="passenger4_age" name="passenger4_age">
+  <br>
+  <label><input type="radio" name="passenger4_gender" value="Male" onclick="updateGenderTextField(this.value)">Male</label>
+  <label><input type="radio" name="passenger4_gender" value="Female" onclick="updateGenderTextField(this.value)">Female</label>
+  <br>
+<h2>Passenger 5:</h2>
+  <label for="passenger5_name">Name:</label>
+  <input type="text" id="passenger5_name" name="passenger5_name">
+  <br>
+  <label for="passenger5_age">Age:</label>
+  <input type="text" id="passenger5_age" name="passenger5_age" onchange="fun4class()">
+  <br>
+  <label><input type="radio" name="passenger5_gender" value="Male" onclick="fun4class()">Male</label>
+  <label><input type="radio" name="passenger5_gender" value="Female" onclick="fun4class()">Female</label>
+  <br>
+
+
+
+
+ <input type="submit" value="Submit">
+ 
+</center>
+</form>
+
+
+
+<script>
+function fun2(){
+	var arr= $('#resultw').val().split(" ");
+	$('#TrainNo').val(arr[0]);
+	$('#TrainName').val(arr[1]);
+	$('#TrainClass').val(" ");
+	$.ajax({
+		url:'TrainClassServlet',
+		method:'POST',
+		data:{
+			TrainNo:arr[0]
+		},
+		 success: function(resultText) {
+		      $('#resultClass').html(resultText);
+		    },
+		    error: function(jqXHR, exception) {
+		      console.log('Error Occurred!');
+		    }
+		
+       
+	})
+	
+}
+</script>
+
+
+
+<script>
+function fun4class(){
+	var arr= $('#resultClass').val();
+	var arr1= $('#resultw').val().split(" ");
+	var from=$('#results').val();
+	var to=$('#resultss').val();
+	var dates=$('#date').val();
+	var p1age=$('#passenger1_age').val();
+	var p2age=$('#passenger2_age').val();
+	var p3age=$('#passenger3_age').val();
+	var p4age=$('#passenger4_age').val();
+	var p5age=$('#passenger5_age').val();
+	
+	$('#TrainClass').val(arr);
+	
+	$.ajax({
+		url:'TrainFareServlet',
+		method:'POST',
+		data:{
+			from:from,to:to,TrainNo:arr1[0],Class:arr,p1age:p1age,p2age:p2age,p3age:p3age,p4age:p4age,p5age:p5age
+		},
+	
+	 success: function(resultText) {
+		      $('#resultClass').html(resultText);
+		    },
+		    error: function(jqXHR, exception) {
+		      console.log('Error Occurred!');
+		    }
+	})
+}
+</script>
+<script>
+function fun5pass(){
+	var arr= $('#TrainNo').val();
+	var arr1= $('#TrainName').val();
+	var from=$('#From').val();
+	var to=$('#To').val();
+	var dates=$('#TrainClass').val();
+	var datess=$('#fare').val();
+	
+	
+	
+	
+	$.ajax({
+		url:'PassengerServlet',
+		method:'POST',
+		data:{
+			TrainNo:arr,TrainName:arr1,From:from,To:to,TrainClass:dates,fare:datess
+		}
+		
+	
+	
+	})
+}
+</script>
+<script >
+function fares() {
+    $.ajax({
+        url: "TrainFareServlet",
+        type: "POST",
+        success: function (response) {
+        
+        	if(response){
+  			  var fare = response;     
+            $('#fare').val(fare);
+           
+        	}
+        	else{
+        		alert("Error");
+        	}
+           
+        },
+        error: function (xhr, status, error) {
+            alert("An error occurred while fetching the record: " + error);
+        }
+    });
+}</script>
+
+
+<script>
+  function updateGenderTextField(value) {
+    var genderTextField = document.getElementById("genderTextField");
+    genderTextField.value = value;
+  }
+
+  function updatePassengerDetails() {
+    var passengers = [];
+
+    for (var i = 1; i <= 5; i++) {
+    var Trainno=document.getElementById("TrainNo").value;
+    var TrainName=document.getElementById("TrainName").value;
+    var TrainClass=document.getElementById("TrainClass").value;
+    var Fare=document.getElementById("fare").value;
+    var From=document.getElementById("From").value;
+    var To=document.getElementById("To").value;
+      var passengerName = document.getElementById("passenger" + i + "_name").value;
+      var passengerAge = document.getElementById("passenger" + i + "_age").value;
+      var passengerGender = document.querySelector('input[name="passenger' + i + '_gender"]:checked').value;
+
+      if (!validateAge(passengerAge)) {
+        alert("Please enter a valid age (numeric value between 1 and 150) for Passenger " + i + ".");
+        return;
+      }
+
+      passengers.push({
+        name: passengerName,
+        age: passengerAge,
+        gender: passengerGender,
+        Trainno:Trainno,
+        TrainName:TrainName,
+        TrainClass: TrainClass,
+        Fare:fare,
+        From:From,
+        To:To
+        
+      });
+    }
+
+    for (var i = 0; i < passengers.length; i++) {
+      var passenger = passengers[i];
+      document.getElementById("passenger" + (i + 1) + "_name_display").textContent = passenger.name;
+      document.getElementById("passenger" + (i + 1) + "_age_display").textContent = passenger.age;
+      document.getElementById("passenger" + (i + 1) + "_gender_display").textContent = passenger.gender;
+    }
+    document.getElementById( "Trainno_display").textContent = passenger.Trainno;
+    document.getElementById("Trainname_display").textContent = passenger.TrainName;
+    document.getElementById("TrainClass_display").textContent = passenger.TrainClass;
+    document.getElementById("From_display").textContent = passenger.From;
+    document.getElementById("To_display").textContent = passenger.To;
+    document.getElementById("Fare_display").textContent = passenger.Fare;
+  }
+
+  function validateAge(age) {
+    var ageValue = parseInt(age);
+    return !isNaN(ageValue) && ageValue > 0 && ageValue < 150;
+  }
+</script>
+
+<button onclick="updatePassengerDetails()">Update Passenger Details</button>
+
+<h2>Passenger 1 Details:</h2>
+<p>Name: <span id="passenger1_name_display"></span></p>
+<p>Age: <span id="passenger1_age_display"></span></p>
+
+<p>Gender: <span id="passenger1_gender_display"></span></p>
+<!-- Display details for Passenger 2, Passenger 3, Passenger 4, and Passenger 5 -->
+<h2>Passenger 2 Details:</h2>
+<p>Name: <span id="passenger2_name_display"></span></p>
+<p>Age: <span id="passenger2_age_display"></span></p>
+<p>Gender: <span id="passenger2_gender_display"></span></p>
+<!-- Details for Passenger 3, Passenger 4, and Passenger 5 -->
+<!-- ... -->
+<h2>Passenger 3 Details:</h2>
+<p>Name: <span id="passenger3_name_display"></span></p>
+<p>Age: <span id="passenger3_age_display"></span></p>
+<p>Gender: <span id="passenger3_gender_display"></span></p>
+<h2>Passenger 4 Details:</h2>
+<p>Name: <span id="passenger4_name_display"></span></p>
+<p>Age: <span id="passenger4_age_display"></span></p>
+<p>Gender: <span id="passenger4_gender_display"></span></p>
+<h2>Passenger 5 Details:</h2>
+<p>Name: <span id="passenger5_name_display"></span></p>
+<p>Age: <span id="passenger5_age_display"></span></p>
+<p>Gender: <span id="passenger5_gender_display"></span></p>
+<h2>Ticket Details:</h2>
+<p>Train No: <span id="Trainno_display"></span></p>
+<p>Train Name: <span id="Trainname_display"></span></p>
+<p>Train Class: <span id="TrainClass_display"></span></p>
+<p>Source: <span id="From_display"></span></p>
+<p>Destination: <span id="To_display"></span></p>
+<p>Fare: <span id="Fare_display"></span></p>
+
+
+</center>
+
+</body>
+</html>
+
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
